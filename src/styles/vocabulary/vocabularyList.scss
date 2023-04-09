@@ -1,0 +1,95 @@
+.vocabularyList {
+    .title {
+        text-align: center;
+        font-size: 2rem;;
+    }
+
+    .tools {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 60rem;
+
+        .searchContainer {
+            display: flex;
+            align-items: center;
+            height: 2rem;
+            .searchInput {
+                box-sizing: border-box;
+                padding: 0 0.5rem;
+                height: 2rem;
+                width: 15rem;
+                margin-right: 0.5rem;
+            }
+        }
+
+        .addButton {
+            border: 2px solid white;
+            box-sizing: border-box;
+            height: 3rem;
+            margin-right: 3rem;
+
+            svg {
+                height: 100%;
+            }
+        }
+    }
+
+    button {
+        background-color: transparent;
+        border: none;
+    }
+
+    table {
+        border-spacing:0;
+        border-collapse: collapse;
+        width: 60rem;
+        
+        tbody {
+            tr:nth-child(2n - 1) {
+                background-color: rgba(255, 255, 255, 0.11);
+            }
+            td {
+                padding: 0.5rem 1rem;
+            }
+        }
+
+        th {
+            padding: 1rem 1rem;
+            text-align: start;
+        }
+        svg {
+            height: 1.5rem;
+            width: 1.5rem;
+        }
+    }
+
+    .noResult {
+        text-align: center;
+        font-size: 2rem;
+        margin-top: 5rem;
+        color: rgba(255, 255, 255, 0.849);
+    }
+}
+
+@media (max-width: 720px) {
+    #layout #pageContent.center > * {
+        width: 100vw;
+    }
+    .vocabularyList {
+        width: 100vw;
+        table {
+            width: 100vw;
+
+            tbody td {
+                padding: 0.2rem 0.6rem;
+            }
+        }
+        .tools {
+            justify-content: flex-start;
+            .searchContainer {
+                margin-left: 0.5rem;
+            }
+        }
+    }
+}

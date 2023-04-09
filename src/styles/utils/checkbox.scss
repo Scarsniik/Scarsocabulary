@@ -1,0 +1,39 @@
+$indicator-color: #eee;
+$indicator-border-color: #ccc;
+$label-color: #333;
+$checked-indicator-color: #333;
+$checked-indicator-border-color: #333;
+
+
+.custom-checkbox__indicator {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  background: $indicator-color;
+  border: 1px solid $indicator-border-color;
+  border-radius: 3px;
+  vertical-align: middle;
+  margin-right: 0.5em;
+}
+
+input[type="checkbox"] {
+  position: absolute;
+  left: -9999px;
+}
+
+input[type="checkbox"]:checked + .custom-checkbox__indicator {
+  position: relative;
+}
+
+input[type="checkbox"]:checked + .custom-checkbox__indicator::before {
+  content: "";
+  background: $checked-indicator-color;
+  border-color: $checked-indicator-border-color;
+  border-radius: 3px;
+  display: block;
+  position: absolute;
+  top: 10%;
+  bottom: 10%;
+  left: 10%;
+  right: 10%;
+}
