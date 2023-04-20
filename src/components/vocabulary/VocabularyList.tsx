@@ -14,7 +14,7 @@ import "src/styles/vocabulary/vocabularyList.scss";
 import ImportButton from "src/components/vocabulary/ImportButton";
 import { ToastContext } from "src/contexts/ToastContext";
 import { ToastType } from "src/models/toast";
-import ExportButton from "src/styles/vocabulary/ExportButton";
+import ExportButton from "src/components/vocabulary/ExportButton";
 
 export default function VocabularyList() {
     const [selectedVocabulary, setSelectedVocabulary] = useState<Word[]>([]);
