@@ -6,9 +6,10 @@ import { classNames } from "src/utils/classNames";
 
 import "src/styles/vocabulary/addWord.scss"
 import { ToastType } from "src/models/toast";
+import { PopupContext } from "src/contexts/PopupContext";
 
 interface Props {
-    onAdd: (v: Word[]) => void;
+    onAdd: (w: Word) => void;
     defaultWord?: Word;
 }
 
@@ -27,27 +28,28 @@ export default function AddWord(props: Props) {
     });
 
     const toasts = useContext(ToastContext);
+    const popup = useContext(PopupContext);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setWord({ ...word, [event.target.id]: event.target.value });
     };
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const newErrors = errors;
         newErrors.name = word.name === "";
         newErrors.kana = word.kana === "";
 
         if (!newErrors.name && !newErrors.kana && !newErrors.kanji) {
-            console.log("Mot ajouté :", word);
-            const result = ApiVocabulary.addWord(word)
+            const result = defaultWord ? await ApiVocabulary.editWord(word) : await ApiVocabulary.addWord(word);
             if (result.status === ApiVocabulary.AddWordResult.Done) {
-                onAdd(result.content as Word[]);
+                onAdd(result.content as Word);
                 toasts.add({
                     title: "Succes",
-                    body: `Le mot ${word.name} à été ajouté à la liste.`,
+                    body: defaultWord ? `Le mot ${word.name} à été modifié.` : `Le mot ${word.name} à été ajouté à la liste.`,
                     type: ToastType.Success,
                 })
+                if (defaultWord) popup.close();
             } else {
                 toasts.add({
                     title: "Erreur",
@@ -88,7 +90,7 @@ export default function AddWord(props: Props) {
                     placeholder="Kanji"
                 />
 
-                <button type="submit">Ajouter</button>
+                <button type="submit">{defaultWord ? "Modifier" : "Ajouter"}</button>
             </form>
         </div>
     );

@@ -1,5 +1,5 @@
-import { useContext, useMemo, useState } from "react";
-import { ApiVocabulary } from "src/api/vocabulary";
+import { useContext, useEffect, useMemo, useState } from "react";
+import { ApiVocabulary, WordResult } from "src/api/vocabulary";
 import Layout from "src/components/layout/Layout";
 import Checkbox from "src/components/utils/Checkbox";
 import Svg from "src/components/utils/Svg";
@@ -11,27 +11,59 @@ import { PopupContext } from "src/contexts/PopupContext";
 import { getAddWordPopup } from "src/components/vocabulary/AddWordPopup";
 
 import "src/styles/vocabulary/vocabularyList.scss";
+import ImportButton from "src/components/vocabulary/ImportButton";
+import { ToastContext } from "src/contexts/ToastContext";
+import { ToastType } from "src/models/toast";
+import ExportButton from "src/styles/vocabulary/ExportButton";
 
 export default function VocabularyList() {
     const [selectedVocabulary, setSelectedVocabulary] = useState<Word[]>([]);
-    const [vocabulary, setVocabulary] = useState<Word[]>(ApiVocabulary.getVocabulary());
+    const [vocabulary, setVocabulary] = useState<Word[] | undefined>(undefined);
     const [search, setSearch] = useState<string>("");
     const [refresh, setRefresh] = useState<number>(0);
 
     const popup = useContext(PopupContext);
+    const toast = useContext(ToastContext);
     
-    const displayedVocabulary = useMemo(() => vocabulary.filter((word) =>
-        word.kana.includes(search) ||
-        word.kanji.includes(search) ||
-        word.name.includes(search)),
+    const displayedVocabulary = useMemo(() => {
+        return vocabulary?.filter((word) =>
+        word.kana?.toLowerCase().includes(search.toLowerCase()) ||
+        word.kanji?.toLowerCase().includes(search.toLowerCase()) ||
+        word.name?.toLowerCase().includes(search.toLowerCase())).sort((a, b) => {
+            const nameA = a.name.toLowerCase();
+            const nameB = b.name.toLowerCase();
+            return nameA.localeCompare(nameB, "fr");
+        })
+    },
     [search, vocabulary, refresh]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    function handleDelete(word: Word) {
-        // Code pour supprimer l'entrée
-        console.log("Supression de ", word);
-        const newVocabulary = vocabulary.filter((w) => w.name !== word.name);
-        setVocabulary(newVocabulary);
-        ApiVocabulary.setVocabulary(newVocabulary);
+    useEffect(() => {
+        fetchVocabulary();
+      }, []);
+
+    async function fetchVocabulary() {
+        const result = await ApiVocabulary.getVocabulary();
+        setVocabulary(result);
+    }
+
+    async function handleDelete(word: Word) {
+        if (!vocabulary) return;
+        
+        if ((await ApiVocabulary.removeWord(word.id as string)).status === WordResult.Done) {
+            const newVocabulary = vocabulary.filter((w) => w.name !== word.name);
+            setVocabulary(newVocabulary);
+            toast.add({
+                title: "Succes",
+                type: ToastType.Success,
+                body:`Le mot ${word.name} a bien été supprimé.`,
+            })
+        } else {
+            toast.add({
+                title: "Erreur",
+                type: ToastType.Error,
+                body:`Une erreur est survenu lors de la suppression de ${word.name}.`,
+            })
+        }
     }
 
     function handleSelect(word: Word) {
@@ -42,8 +74,9 @@ export default function VocabularyList() {
         }
     }
 
-    function handleEdit(vocabulary: Word) {
-        // Code pour éditer l'entrée
+    function handleEdit(word: Word) {
+        console.log(word);
+        popup.setData(getAddWordPopup(onEdit, word));
     }
 
     function handleSearch(value: string) {
@@ -51,7 +84,16 @@ export default function VocabularyList() {
         setSearch(value);
     }
 
-    function onAdd(newVocabulary: Word[]) {
+    function onAdd(newWord: Word) {
+        console.log(newWord);
+        setVocabulary([...vocabulary as Word[], newWord]);
+        setRefresh(Date.now());
+    }
+
+    function onEdit(newWord: Word) {
+        const newVocabulary = vocabulary as Word[];
+        const index = newVocabulary?.findIndex((w) => w.id === newWord.id);
+        newVocabulary[index] = newWord;
         setVocabulary(newVocabulary);
         setRefresh(Date.now());
     }
@@ -74,9 +116,15 @@ export default function VocabularyList() {
                         onChange={(e) => handleSearch(e.target.value)}
                     />
                 </div>
-                <button onClick={openAddForm} className="addButton"><Svg src={AddIcon}/></button>
+                <div className="contentButtons">
+                    { vocabulary &&
+                        <ExportButton vocabulary={vocabulary as Word[]}/>
+                    }
+                    <ImportButton onImportSuccess={() => toast.add({title: "Succes", type: ToastType.Success, body:"Le JSON a été importé avec succes"})}/>
+                    <button onClick={openAddForm} className="addButton"><Svg src={AddIcon}/></button>
+                </div>
             </div>
-            { displayedVocabulary.length > 0 ? (
+            { displayedVocabulary && displayedVocabulary.length > 0 ? (
                 <table>
                     <thead>
                         <tr>

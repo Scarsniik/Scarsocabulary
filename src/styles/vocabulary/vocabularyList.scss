@@ -23,14 +23,33 @@
             }
         }
 
-        .addButton {
-            border: 2px solid white;
-            box-sizing: border-box;
-            height: 3rem;
-            margin-right: 3rem;
+        .contentButtons {
+            display: flex;
+            flex-direction: row;
 
-            svg {
-                height: 100%;
+            button {
+                background-color: transparent;
+                border: 1px solid #eee;
+                color: white;
+                font-size: 14px;
+                font-weight: 600;
+                padding: 8px 8px;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: all 0.3s ease-in-out;
+                margin-left: 0.8rem;
+
+                &:hover {
+                background-color: #fdfdfd13;
+                }
+            
+                &:active {
+                transform: translateY(1px);
+                }
+        
+                svg {
+                    height: 1.5rem;
+                }
             }
         }
     }
