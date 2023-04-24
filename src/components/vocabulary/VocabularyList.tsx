@@ -9,12 +9,15 @@ import DeleteIcon from "src/assets/img/delete.svg";
 import AddIcon from "src/assets/img/add.svg";
 import { PopupContext } from "src/contexts/PopupContext";
 import { getAddWordPopup } from "src/components/vocabulary/AddWordPopup";
-
-import "src/styles/vocabulary/vocabularyList.scss";
 import ImportButton from "src/components/vocabulary/ImportButton";
 import { ToastContext } from "src/contexts/ToastContext";
 import { ToastType } from "src/models/toast";
 import ExportButton from "src/components/vocabulary/ExportButton";
+import ExtractKanjiButton from "src/components/vocabulary/ExtractKanjiButton";
+import * as wanakana from "wanakana";
+
+import "src/styles/vocabulary/vocabularyList.scss";
+
 
 export default function VocabularyList() {
     const [selectedVocabulary, setSelectedVocabulary] = useState<Word[]>([]);
@@ -27,7 +30,7 @@ export default function VocabularyList() {
     
     const displayedVocabulary = useMemo(() => {
         return vocabulary?.filter((word) =>
-        word.kana?.toLowerCase().includes(search.toLowerCase()) ||
+        (word.kana?.toLowerCase().includes(search.toLowerCase()) || wanakana.toRomaji(word.kana).includes(search.toLowerCase())) ||
         word.kanji?.toLowerCase().includes(search.toLowerCase()) ||
         word.name?.toLowerCase().includes(search.toLowerCase())).sort((a, b) => {
             const nameA = a.name.toLowerCase();
@@ -80,7 +83,6 @@ export default function VocabularyList() {
     }
 
     function handleSearch(value: string) {
-        console.log("recherche", value)
         setSearch(value);
     }
 
@@ -102,8 +104,7 @@ export default function VocabularyList() {
         popup.setData(getAddWordPopup(onAdd));
     }
 
-    return (
-        <Layout center>
+    return ( <Layout center>
         <div className="vocabularyList">
             <h2 className="title"> Vocabulaire </h2>
             <div className="tools">
@@ -117,13 +118,15 @@ export default function VocabularyList() {
                     />
                 </div>
                 <div className="contentButtons">
-                    { vocabulary &&
+                    { vocabulary && <>
+                        <ExtractKanjiButton/>
                         <ExportButton vocabulary={vocabulary as Word[]}/>
-                    }
+                    </>}
                     <ImportButton onImportSuccess={() => toast.add({title: "Succes", type: ToastType.Success, body:"Le JSON a été importé avec succes"})}/>
                     <button onClick={openAddForm} className="addButton"><Svg src={AddIcon}/></button>
                 </div>
             </div>
+            <p className="resultCount"> {displayedVocabulary?.length && `${displayedVocabulary?.length} mots`} </p>
             { displayedVocabulary && displayedVocabulary.length > 0 ? (
                 <table>
                     <thead>
@@ -161,6 +164,5 @@ export default function VocabularyList() {
                 </table>
             ) : <p className="noResult">Aucun résultat</p>}
         </div>
-        </Layout>
-    );
+    </Layout>);
 }

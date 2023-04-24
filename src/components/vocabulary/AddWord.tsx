@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import { ApiVocabulary } from "src/api/vocabulary";
 import { ToastContext } from "src/contexts/ToastContext";
 import { Word } from "src/models/word";
@@ -15,11 +15,12 @@ interface Props {
 
 export default function AddWord(props: Props) {
     const { onAdd, defaultWord } = props;
-    const [word, setWord] = useState<Word>(defaultWord || {
+    const emptyForm = useMemo(() => defaultWord || {
         name: "",
         kana: "",
         kanji: "",
-    });
+    }, [defaultWord])
+    const [word, setWord] = useState<Word>(emptyForm);
 
     const [errors, setErrors] = useState({
         name: false,
@@ -50,6 +51,9 @@ export default function AddWord(props: Props) {
                     type: ToastType.Success,
                 })
                 if (defaultWord) popup.close();
+                const form = event.target as HTMLFormElement;
+                setWord(emptyForm);
+                form.getElementsByTagName("input")[0].focus();
             } else {
                 toasts.add({
                     title: "Erreur",

@@ -1,7 +1,13 @@
 .vocabularyList {
+    display: flex;
+    flex-direction: column;
     .title {
         text-align: center;
         font-size: 2rem;;
+    }
+    .resultCount {
+        margin-top: 0.2rem;
+        margin-bottom: 0;
     }
 
     .tools {
