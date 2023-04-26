@@ -3,11 +3,10 @@ import { useForm } from "react-hook-form";
 import { ApiAuth } from "src/api/auth";
 import Layout from "src/components/layout/Layout";
 import { Credentials } from "src/models/auth";
-import { getQueryParams, getUrl } from "src/utils/url";
-import { Link, useNavigate } from "react-router-dom";
+import { getUrl } from "src/utils/url";
+import { useNavigate } from "react-router-dom";
 
 import "src/styles/auth/login.scss";
-import { AuthContext } from "src/contexts/AuthContext";
 import { ToastContext } from "src/contexts/ToastContext";
 import { ToastType } from "src/models/toast";
 
@@ -15,31 +14,25 @@ export default function Login() {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const params = getQueryParams<{redirect: string}>();
   const navigate = useNavigate();
-  const auth = useContext(AuthContext);
   const toast = useContext(ToastContext);
 
   async function onSubmit(data: Credentials) {
     setIsSubmitting(true);
-    const user = (await ApiAuth.login(data))?.user;
+    const sucess = (await ApiAuth.register(data));
     setIsSubmitting(false);
-    if (user) {
-      if (auth.setAsLogged) auth.setAsLogged(user);
-      if (params.redirect) {
-        navigate(params.redirect);
-      } else {
-        navigate(getUrl("home"));
-      }
+    if (sucess) {
+      toast.add({title: "Succes", body: "Votre compte a bien été créé ! Youpi !", type: ToastType.Success});
+      navigate(getUrl("login"));
     } else {
-      toast.add({title: "Erreur", body: "Une erreur s'est produite lors de la connection", type: ToastType.Error});
+      toast.add({title: "Echec", body: "Une erreur s'est produite lors de la creation de compte", type: ToastType.Error});
     }
   }
 
   return (
     <Layout center>
       <div className="login">
-        <h2>Connection</h2>
+        <h2>Création de Compte</h2>
         <form onSubmit={handleSubmit(onSubmit as any)}>
           <div className="form-group">
             <label htmlFor="username">Nom d'utilisateur:</label>
@@ -82,10 +75,9 @@ export default function Login() {
           </div>
 
           <button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Envoi en cours..." : "Se connecter"}
+            {isSubmitting ? "Envoi en cours..." : "Créer le compte"}
           </button>
         </form>
-        <Link to="/signup">Pas encore de compte ?</Link>
       </div>
     </Layout>
   );

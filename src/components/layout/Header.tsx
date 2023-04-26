@@ -19,11 +19,14 @@ export default function Header() {
         <Link to="/kanji">
           Kanji
         </Link>
-      </> :
+      </> : <>
         <Link to="/login">
           Se connecter
         </Link>
-      }
+        <Link to="/signup">
+          S'enregistrer
+        </Link>
+      </>}
     </header>
   );
 }

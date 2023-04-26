@@ -1,4 +1,3 @@
-import { Word } from "src/models/word";
 import axios from "src/api/axios";
 import { API_URL } from "src/config";
 import { Auth, AuthState, Credentials } from "src/models/auth";
@@ -11,17 +10,20 @@ async function login(credentials: Credentials): Promise<any> {
         if (response) {
             localStorage.setItem("authToken", response.token);
             return response;
+        } else {
+            return;
         }
     } catch (error) {
         console.error(error);
-        return [];
+        return;
     }
 }
 
-async function register(vocabulary: Word[]): Promise<boolean> {
+async function register(credentials: Credentials): Promise<boolean> {
     try {
-        await axios.post(API_URL, vocabulary);
-        return true;
+        const response = await axios.post(`${AUTH_API_URL}/signup`, credentials);
+        if (response.status === 201) return true;
+        return false;
     } catch (error) {
         console.error(error);
         return false;
