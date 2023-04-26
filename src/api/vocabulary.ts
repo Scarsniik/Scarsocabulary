@@ -1,5 +1,5 @@
 import { ApiResult } from "src/models/api";
-import { KanjiData, Word, WordAndData } from "src/models/word";
+import { Word, WordAndData } from "src/models/word";
 import { API_URL } from "src/config";
 import axios from "src/api/axios";
 

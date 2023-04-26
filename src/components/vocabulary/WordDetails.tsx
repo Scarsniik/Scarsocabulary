@@ -13,7 +13,6 @@ export default function WordDetails() {
     const [result, setResult] = useState<WordAndData>();
     const wordId = useParams().id;
     const fetching = useRef(false);
-    const [refresh, setRefresh] = useState(0)
 
     const toast = useContext(ToastContext);
     const popup = useContext(PopupContext);
@@ -32,17 +31,16 @@ export default function WordDetails() {
             return;
         }
         setResult(fetchResult);
-        fetching.current = false;
-    }, [wordId]);
+    }, [wordId, nav, toast]);
 
     useEffect(() => {
         if (wordId && !fetching.current) {
             fetch();
         }
-    }, [wordId, refresh, fetch])
+    }, [wordId, fetch])
 
     function onEdit() {
-        setRefresh(Date.now());
+        fetch();
     }
 
     async function removeWord(): Promise<boolean> {        
