@@ -29,6 +29,7 @@ interface Props<T> {
     removeItem: (item: T) => Promise<boolean> | boolean;
     getDeleteMessage: (item: T, error?: boolean) => string
     getAddPopup: (item?: T) => PopupData;
+    onImport: () => void;
 }
 
 export default function TermList<T>(props: Props<T>) {
@@ -43,6 +44,7 @@ export default function TermList<T>(props: Props<T>) {
         removeItem,
         getDeleteMessage,
         getAddPopup,
+        onImport,
     } = props;
     const [selectedItems, setSelectedItems] = useState<T[]>([]);
     const [search, setSearch] = useState<string>("");
@@ -96,6 +98,11 @@ export default function TermList<T>(props: Props<T>) {
         popup.setData(getAddPopup());
     }
 
+    function onImportSuccess() {
+        onImport();
+        toast.add({title: "Succes", type: ToastType.Success, body:"Le JSON a été importé avec succes"})
+    }
+
     return (
         <div className="vocabularyList">
             <h2 className="title"> {title} </h2>
@@ -114,11 +121,11 @@ export default function TermList<T>(props: Props<T>) {
                         {extraActions}
                         <ExportButton<T> items={items as T[]}/>
                     </>}
-                    <ImportButton onImportSuccess={() => toast.add({title: "Succes", type: ToastType.Success, body:"Le JSON a été importé avec succes"})}/>
+                    <ImportButton onImportSuccess={onImportSuccess}/>
                     <button onClick={openAddForm} className="addButton"><Svg src={AddIcon}/></button>
                 </div>
             </div>
-            <p className="resultCount"> {displayedItems?.length && `${displayedItems?.length} mots`} </p>
+            <p className="resultCount"> {displayedItems && displayedItems?.length > 0 && `${displayedItems?.length} mots`} </p>
             { displayedItems && displayedItems.length > 0 ? (
                 <table>
                     <thead>

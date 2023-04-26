@@ -4,9 +4,9 @@ import Layout from "src/components/layout/Layout";
 import { Kanji } from "src/models/word";
 import { getAddKanjiPopup } from "src/components/kanji/AddKanjiPopup";
 import TermList, { Column } from "src/components/utils/termList/TermList";
+import ExtractKanjiButton from "src/components/kanji/ExtractKanjiButton";
 
 import "src/styles/vocabulary/vocabularyList.scss";
-import ExtractKanjiButton from "src/components/kanji/ExtractKanjiButton";
 
 
 export default function VocabularyList() {
@@ -82,6 +82,7 @@ export default function VocabularyList() {
             refresh={refresh}
             removeItem={removeKanji}
             searchFilterFunc={searchFilterFunc}
+            onImport={() => setRefresh(Date.now)}
             title="Kanji"
             sortBy="name"
         />

@@ -15,7 +15,7 @@ export default function VocabularyList() {
 
     useEffect(() => {
         fetchVocabulary();
-      }, []);
+      }, [refresh]);
 
     async function fetchVocabulary() {
         const result = await ApiVocabulary.getVocabulary();
@@ -87,6 +87,7 @@ export default function VocabularyList() {
             refresh={refresh}
             removeItem={removeWord}
             searchFilterFunc={searchFilterFunc}
+            onImport={() => setRefresh(Date.now)}
             title="Vocabulaire"
             sortBy="name"
         />
