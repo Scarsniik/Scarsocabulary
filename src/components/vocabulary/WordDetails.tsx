@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ApiVocabulary, WordResult } from "src/api/vocabulary";
 import Layout from "src/components/layout/Layout";
@@ -19,17 +19,7 @@ export default function WordDetails() {
     const popup = useContext(PopupContext);
     const nav = useNavigate();
 
-    useEffect(() => {
-        if (wordId && !fetching.current) {
-            fetch();
-        }
-    }, [wordId, refresh])
-
-    function onEdit() {
-        setRefresh(Date.now());
-    }
-
-    async function fetch() {
+    const fetch = useCallback(async () => {
         fetching.current = true;
         const fetchResult = await ApiVocabulary.getWord(wordId as string) as WordAndData;
         if (!fetchResult) {
@@ -43,6 +33,16 @@ export default function WordDetails() {
         }
         setResult(fetchResult);
         fetching.current = false;
+    }, [wordId]);
+
+    useEffect(() => {
+        if (wordId && !fetching.current) {
+            fetch();
+        }
+    }, [wordId, refresh, fetch])
+
+    function onEdit() {
+        setRefresh(Date.now());
     }
 
     async function removeWord(): Promise<boolean> {        
