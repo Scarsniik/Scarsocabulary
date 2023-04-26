@@ -131,8 +131,8 @@ export default function TermList<T>(props: Props<T>) {
                     <thead>
                         <tr>
                             <th/>
-                                { columns.map((column) =>
-                                    <td>{column.label}</td>
+                                { columns.map((column, key) =>
+                                    <td key={key}>{column.label}</td>
                                 )}
                             <th/>
                         </tr>
@@ -146,8 +146,8 @@ export default function TermList<T>(props: Props<T>) {
                                     checked={selectedItems.includes(item)}
                                 />
                             </td>
-                            { columns.map((column) =>
-                                <td>{column.render(item)}</td>
+                            { columns.map((column, key) =>
+                                <td key={key}>{column.render(item)}</td>
                             )}
                             <td className="actionsLine">
                                 <button onClick={() => handleEdit(item)}>

@@ -4,6 +4,7 @@ import Login from "src/components/auth/Login";
 import Signup from "src/components/auth/Signup";
 import KanjiList from "src/components/kanji/KanjiList";
 import VocabularyList from "src/components/vocabulary/VocabularyList";
+import WordDetails from "src/components/vocabulary/WordDetails";
 
 export const routes: ({needLogin?: boolean, name?: string} & PathRouteProps)[] = [
     {
@@ -20,6 +21,12 @@ export const routes: ({needLogin?: boolean, name?: string} & PathRouteProps)[] =
         name: "vocabulary",
         path: "/vocabulary",
         element: <VocabularyList />,
+        needLogin: true,
+    },
+    {
+        name: "wordDetails",
+        path: "/vocabulary/:id",
+        element: <WordDetails />,
         needLogin: true,
     },
     {

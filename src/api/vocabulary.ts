@@ -1,5 +1,5 @@
 import { ApiResult } from "src/models/api";
-import { KanjiData, Word } from "src/models/word";
+import { KanjiData, Word, WordAndData } from "src/models/word";
 import { API_URL } from "src/config";
 import axios from "src/api/axios";
 
@@ -26,17 +26,17 @@ async function getVocabulary(): Promise<Word[]> {
   }
 }
 
-async function getKanjiList(): Promise<KanjiData[]> {
+async function getWord(id: string): Promise<WordAndData | null> {
   try {
-    const { data } = await axios.get(`${WORD_API_URL}/kanjis`);
+    const { data } = await axios.get<WordAndData>(`${WORD_API_URL}/${id}`);
     if (data) {
       return data;
     } else {
-      return [];
+      return null;
     }
   } catch (error) {
     console.error(error);
-    return [];
+    return null;
   }
 }
 
@@ -107,7 +107,7 @@ async function removeWord(id: string): Promise<ApiResult<Word[], WordResult>> {
 
 export const ApiVocabulary = {
   getVocabulary,
-  getKanjiList,
+  getWord,
   addWord,
   removeWord,
   AddWordResult: WordResult,

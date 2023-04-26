@@ -44,6 +44,7 @@
                 cursor: pointer;
                 transition: all 0.3s ease-in-out;
                 margin-left: 0.8rem;
+                width: 66px;
 
                 &:hover {
                 background-color: #fdfdfd13;
@@ -69,6 +70,16 @@
         border-spacing:0;
         border-collapse: collapse;
         width: 60rem;
+
+        a {
+            color: white;
+            text-decoration: none;
+        }
+
+        thead tr td {
+            padding: 0.8rem 1rem;
+            font-weight: bold;
+        }
         
         tbody {
             tr:nth-child(2n - 1) {

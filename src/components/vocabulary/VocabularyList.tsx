@@ -7,6 +7,7 @@ import * as wanakana from "wanakana";
 import TermList, { Column } from "src/components/utils/termList/TermList";
 
 import "src/styles/vocabulary/vocabularyList.scss";
+import { Link } from "react-router-dom";
 
 
 export default function VocabularyList() {
@@ -41,7 +42,6 @@ export default function VocabularyList() {
     }
 
     function onAdd(newWord: Word) {
-        console.log(newWord);
         setVocabulary([...vocabulary as Word[], newWord]);
         setRefresh(Date.now());
     }
@@ -65,7 +65,9 @@ export default function VocabularyList() {
     const column: Column<Word>[] = [
         {
             label: "Nom",
-            render: (item: Word) => item.name,
+            render: (item: Word) => (
+                <Link to={`/vocabulary/${item._id}`}>{item.name}</Link>
+            ),
         },
         {
             label: "Kana",
@@ -77,11 +79,11 @@ export default function VocabularyList() {
         }
     ]
 
-    return ( <Layout center>
+    return ( <Layout center loading={!vocabulary}>
         <TermList<Word>
             columns={column}
             extraActions={[]}
-            getAddPopup={(word) => word ? getAddWordPopup(onEdit, word) : getAddWordPopup(onAdd, word)}
+            getAddPopup={(word) => word ?  getAddWordPopup(onEdit, word) : getAddWordPopup(onAdd, word)}
             getDeleteMessage={getDeleteMessage}
             items={vocabulary}
             refresh={refresh}

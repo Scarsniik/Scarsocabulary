@@ -15,7 +15,7 @@ export default function VocabularyList() {
 
     useEffect(() => {
         fetch();
-      }, []);
+      }, [refresh]);
 
     async function fetch() {
         const result = await ApiKanji.getKanjis();
@@ -72,10 +72,10 @@ export default function VocabularyList() {
         }
     ]
 
-    return ( <Layout center>
+    return ( <Layout center loading={!kanjis}>
         <TermList<Kanji>
             columns={column}
-            extraActions={[<ExtractKanjiButton onFinished={setKanjis}/>]}
+            extraActions={[<ExtractKanjiButton onFinished={() => setRefresh(Date.now())}/>]}
             getAddPopup={(kanji) => kanji ? getAddKanjiPopup(onEdit, kanji) : getAddKanjiPopup(onAdd, kanji)}
             getDeleteMessage={getDeleteMessage}
             items={kanjis}

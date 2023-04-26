@@ -11,6 +11,11 @@ export interface Kanji {
     kanji: string;
 }
 
+export interface WordAndData {
+    word: Word;
+    data: KanjiData;
+}
+
 // Request Kanji tout ça
 
 export type Sense = {
