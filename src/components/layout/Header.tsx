@@ -12,11 +12,14 @@ export default function Header() {
         <img src={logo} alt="" className="logo"/>
         Scarsnik
       </Link>
-      { auth.state === AuthState.Logged ?
+      { auth.state === AuthState.Logged ? <>
         <Link to="/vocabulary">
           Vocabulaire
         </Link>
-      :
+        <Link to="/kanji">
+          Kanji
+        </Link>
+      </> :
         <Link to="/login">
           Se connecter
         </Link>

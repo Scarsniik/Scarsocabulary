@@ -61,7 +61,7 @@ async function editWord(word: Word): Promise<ApiResult<Word, WordResult>> {
   if (word.kana === "" || word.name === "") return {status: WordResult.BadArguments}
 
   try {        
-    const result = await axios.put<any, any>(`${WORD_API_URL}/${word.id}`, word);
+    const result = await axios.put<any, any>(`${WORD_API_URL}/${word._id}`, word);
     return {
       status: WordResult.Done,
       content: result.data,

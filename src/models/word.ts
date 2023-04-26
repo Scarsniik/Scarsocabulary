@@ -1,11 +1,12 @@
 export interface Word {
-    id?: string;
+    _id?: string;
     name: string;
     kana: string;
     kanji: string;
 }
 
 export interface Kanji {
+    _id?: string;
     name: string;
     kanji: string;
 }
