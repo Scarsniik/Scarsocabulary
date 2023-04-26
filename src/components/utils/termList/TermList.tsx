@@ -1,5 +1,4 @@
 import { useContext, useMemo, useState } from "react";
-import Layout from "src/components/layout/Layout";
 import Checkbox from "src/components/utils/Checkbox";
 import Svg from "src/components/utils/Svg";
 import EditIcon from "src/assets/img/edit.svg";

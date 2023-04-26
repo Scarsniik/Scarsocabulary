@@ -1,5 +1,4 @@
 import { saveAs } from "file-saver";
-import { Word } from "src/models/word";
 import Svg from "src/components/utils/Svg";
 import DownloadIcon from "src/assets/img/download.svg"
 
