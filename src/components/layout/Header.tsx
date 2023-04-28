@@ -19,6 +19,9 @@ export default function Header() {
         <Link to="/kanji">
           Kanji
         </Link>
+        <Link to="/training">
+          Entrainement
+        </Link>
       </> : <>
         <Link to="/login">
           Se connecter

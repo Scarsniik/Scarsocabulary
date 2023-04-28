@@ -1,3 +1,4 @@
+import moment from "moment";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ApiVocabulary, WordResult } from "src/api/vocabulary";
@@ -76,6 +77,8 @@ export default function WordDetails() {
                     { result?.word?.kanji &&
                         <p><label>Kanji: </label>{result?.word?.kanji}</p>
                     }
+                    <p><label>Crée le </label>{moment(result?.word?.createdAt).format('DD/MM/YYYY HH:mm')}</p>
+                    <p><label>Modifié le </label>{moment(result?.word?.updatedAt).format('DD/MM/YYYY HH:mm')}</p>
                 </div>
                 <div>
                     <button onClick={handleEdit}>Edit</button>

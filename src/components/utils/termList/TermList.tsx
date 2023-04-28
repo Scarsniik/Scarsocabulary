@@ -86,7 +86,6 @@ export default function TermList<T>(props: Props<T>) {
     }
 
     function handleEdit(item: T) {
-        console.log(item);
         popup.setData(getAddPopup(item));
     }
 

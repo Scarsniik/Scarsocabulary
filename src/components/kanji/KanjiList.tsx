@@ -40,7 +40,6 @@ export default function VocabularyList() {
     }
 
     function onAdd(newKanji: Kanji) {
-        console.log(newKanji);
         setKanjis([...kanjis as Kanji[], newKanji]);
         setRefresh(Date.now());
     }

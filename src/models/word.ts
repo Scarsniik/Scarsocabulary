@@ -3,12 +3,16 @@ export interface Word {
     name: string;
     kana: string;
     kanji: string;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export interface Kanji {
     _id?: string;
     name: string;
     kanji: string;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export interface WordAndData {
