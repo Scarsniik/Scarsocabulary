@@ -1,5 +1,5 @@
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { TrainingLanguage, TrainingSubject } from "src/models/training";
 import { Kanji, Word } from "src/models/word";
 import "src/styles/training/cardTraining.scss";
@@ -21,6 +21,7 @@ export default function CardTraining(props: Props) {
     const type = useMemo<TrainingSubject>(() => {
         return isWord(data) ? TrainingSubject.Vocabulary : TrainingSubject.Kanji;
     }, [data]);
+
     const toDisplay = useMemo<string>(() => {
         if (type === TrainingSubject.Vocabulary) {
             switch (language) {
@@ -47,35 +48,15 @@ export default function CardTraining(props: Props) {
         }
     }, [data, language, type]);
 
-    useEffect(() => {
-        document.addEventListener("keyup", handleShortcut);
-
-        return () => {
-            document.removeEventListener("keyup", handleShortcut);
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    useEffect(() => {
-        setShowResponse(false);
-    }, [data, language]);
-
-    useEffect(() => {
-        if (lastData && lastData === data) {
-            setShowResponse(true);
-        }
-    }, [lastData, data]);
-
-
-    function showAnswer() {
+    const showAnswer = useCallback(() => {
         setLastData(data);
-    }
+    }, [data]);
+      
+    const next = useCallback(() => {
+    onFinish();
+    }, [onFinish]);
 
-    function next() {
-        onFinish();
-    }
-
-    function handleShortcut(e: KeyboardEvent) {
+    const handleShortcut = useCallback((e: KeyboardEvent) => {
         switch (e.key) {
             case "ArrowRight":
                 next();
@@ -88,7 +69,25 @@ export default function CardTraining(props: Props) {
                 }
             break;
         }
-    }
+    }, [next, showAnswer, showResponse]);
+
+    useEffect(() => {
+        document.addEventListener("keyup", handleShortcut);
+
+        return () => {
+            document.removeEventListener("keyup", handleShortcut);
+        };
+    }, [handleShortcut]);
+
+    useEffect(() => {
+        setShowResponse(false);
+    }, [data, language]);
+
+    useEffect(() => {
+        if (lastData && lastData === data) {
+            setShowResponse(true);
+        }
+    }, [lastData, data]);
 
     return (
         <div className="cardTraining">
