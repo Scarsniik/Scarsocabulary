@@ -1,3 +1,5 @@
+import { JishoAPIResult } from "unofficial-jisho-api";
+
 export interface Word {
     _id?: string;
     name: string;
@@ -17,7 +19,7 @@ export interface Kanji {
 
 export interface WordAndData {
     word: Word;
-    data: KanjiData;
+    data: JishoAPIResult;
 }
 
 // Request Kanji tout ça

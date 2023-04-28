@@ -8,7 +8,7 @@ import { PopupContext } from "src/contexts/PopupContext";
 import { ToastContext } from "src/contexts/ToastContext";
 import { ToastType } from "src/models/toast";
 import { WordAndData } from "src/models/word";
-import "src/styles/app.scss";
+import "src/styles/vocabulary/wordDetails.scss";
 
 export default function WordDetails() {
     const [result, setResult] = useState<WordAndData>();
@@ -67,10 +67,12 @@ export default function WordDetails() {
         popup.setData(getAddWordPopup(onEdit, result!.word))
     }
 
+    console.log(result?.data.data)
 
     return (
         <Layout center loading={!result}>
             <div className="wordDetails">
+                <h2>{result?.word?.name}</h2>
                 <div>
                     <p><label>Français: </label>{result?.word?.name}</p>
                     <p><label>Kana: </label>{result?.word?.kana}</p>
@@ -81,9 +83,27 @@ export default function WordDetails() {
                     <p><label>Modifié le </label>{moment(result?.word?.updatedAt).format('DD/MM/YYYY HH:mm')}</p>
                 </div>
                 <div>
-                    <button onClick={handleEdit}>Edit</button>
-                    <button onClick={removeWord}>Delete</button>
+                    <button className="button" onClick={handleEdit}>Edit</button>
+                    <button className="button" onClick={removeWord}>Delete</button>
                 </div>
+                { result?.data.meta.status === 200 && <div>
+                    <h3>Resultat Jisho.org</h3>
+                    <div className="data">
+                        { result!.data.data.map((item) => 
+                            item.senses.map((sense, i) => (
+                                <div key={i} className="card">
+                                    <h4>{item.slug} /{item.japanese.map((jap, k) => 
+                                        ` ${jap.reading}${k !== item.japanese.length - 1 ? "/" : ""}`
+                                    )}</h4>
+                                    <p>{sense.info}</p>
+                                    { sense.english_definitions.map((def, j) =>
+                                        <p key={j}>{j} : {def}</p>
+                                    )}
+                                </div>
+                            )
+                        ))}
+                    </div>
+                </div>}
             </div>
         </Layout>
     );
