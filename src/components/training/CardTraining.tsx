@@ -53,6 +53,7 @@ export default function CardTraining(props: Props) {
         return () => {
             document.removeEventListener("keyup", handleShortcut);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
