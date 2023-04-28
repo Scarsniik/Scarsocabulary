@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
+import moment from "moment";
+import { useContext, useEffect, useState } from "react";
 import { ApiKanji } from "src/api/kanjis";
 import { ApiVocabulary } from "src/api/vocabulary";
 import Layout from "src/components/layout/Layout";
 import CardTraining from "src/components/training/CardTraining";
 import TrainingSettings from "src/components/training/TrainingSettings";
+import { ToastContext } from "src/contexts/ToastContext";
+import { ToastType } from "src/models/toast";
 import { TrainingLanguage, TrainingSettingsData } from "src/models/training";
 import { Kanji, Word } from "src/models/word";
 import "src/styles/training/trainingHome.scss";
@@ -15,12 +18,7 @@ export default function TrainingHome() {
   const [currentData, setCurrentData] = useState<Kanji|Word>();
   const [currentLanguage, setCurrentLanguage] = useState<TrainingLanguage>();
 
-  useEffect(() => {
-    if (settings) {
-      fetchVocabulary();
-      fetchKanji();
-    }
-  }, [settings]);
+  const toast = useContext(ToastContext);
 
   useEffect(() => {
     if (words && kanjis) {
@@ -35,6 +33,12 @@ export default function TrainingHome() {
 
   async function fetchKanji() {
     setKanjis(await ApiKanji.getKanjis());
+  }
+
+  function onStart(settings: TrainingSettingsData) {
+    setSettings(settings);
+    fetchVocabulary();
+    fetchKanji();
   }
 
   function nextData() {
@@ -62,6 +66,15 @@ export default function TrainingHome() {
       if (randomLanguage === TrainingLanguage.FromKanji) {
         newList = newList.filter((w) => !!w.kanji && w.kanji !== "");
       }
+      
+      if (settings.today) {
+        newList = newList.filter((w) => w.createdAt && moment(w.createdAt).isSame(moment(), "day"));
+      }
+
+      if (newList.length === 0) {
+        toast.add({type: ToastType.Error, title: "Erreur", body: "Aucun mot ne corrrespond à la séléction."});
+        return;
+      }
       const randomWord = newList[Math.floor(Math.random() * newList.length)];
 
       setCurrentData(randomWord);
@@ -76,7 +89,7 @@ export default function TrainingHome() {
         { settings && currentData && currentLanguage ? (
           <CardTraining data={currentData} onFinish={nextData} language={currentLanguage}/>
         ) : (
-          <TrainingSettings onStart={setSettings}/>
+          <TrainingSettings onStart={onStart}/>
         )}
       </div>
     </Layout>
