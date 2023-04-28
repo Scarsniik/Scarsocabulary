@@ -48,6 +48,14 @@ export default function CardTraining(props: Props) {
     }, [data, language, type]);
 
     useEffect(() => {
+        document.addEventListener("keyup", handleShortcut);
+
+        return () => {
+            document.removeEventListener("keyup", handleShortcut);
+        };
+    }, []);
+
+    useEffect(() => {
         setShowResponse(false);
     }, [data, language]);
 
@@ -64,6 +72,21 @@ export default function CardTraining(props: Props) {
 
     function next() {
         onFinish();
+    }
+
+    function handleShortcut(e: KeyboardEvent) {
+        switch (e.key) {
+            case "ArrowRight":
+                next();
+            break;
+            case "Enter":
+                if (showResponse) {
+                    next();
+                } else {
+                    showAnswer();
+                }
+            break;
+        }
     }
 
     return (
