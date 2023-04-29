@@ -32,8 +32,7 @@ export default function TrainingSettings({onStart: onSettingsChange}: Props) {
         return stringSettings ? JSON.parse(stringSettings) : undefined;
     }, []);
     const [values, setValues] = useState<TrainingSettingsData>(
-        savedSettings ??
-        {
+        {...{
             [TrainingSubject.Kanji]: false,
             [TrainingSubject.Vocabulary]: true,
             [TrainingType.Cards]: true,
@@ -43,7 +42,7 @@ export default function TrainingSettings({onStart: onSettingsChange}: Props) {
             [TrainingFilters.Favorites]: false,
             createdSince: 0,
             randomType: TrainingRandomType.Full,
-        }
+        }, ...(savedSettings ?? {})}
     )
 
     console.log(values);
