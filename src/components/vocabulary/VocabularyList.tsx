@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ApiVocabulary, WordResult } from "src/api/vocabulary";
 import Layout from "src/components/layout/Layout";
 import { Word } from "src/models/word";

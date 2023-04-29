@@ -24,7 +24,7 @@ const PatchnoteManager: React.FC = () => {
                 onClose: () => localStorage.setItem("lastVersion", patchnote[0].version)
             })
         }
-    }, []);
+    }, [popup]);
 
     return <></>;
 };
