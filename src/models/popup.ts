@@ -14,6 +14,6 @@ export interface PopupData {
     key?: string | null;
     body: JSX.Element | string | null;
     title: JSX.Element | string | null;
-    actions: PopupAction[] | null;
+    actions?: PopupAction[] | null;
     onClose?: () => void;
 }

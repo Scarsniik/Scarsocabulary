@@ -1,5 +1,6 @@
 import Router from "src/components/Router";
 import { AuthManager } from "src/components/auth/AuthManager";
+import PatchnoteManager from "src/components/utils/PatchnoteManager";
 import { PopupManager } from "src/components/utils/PopupManager";
 import { ToastManager } from "src/components/utils/ToastManager";
 
@@ -10,11 +11,11 @@ function App() {
     <AuthManager>
       <ToastManager>
         <PopupManager>
+          <PatchnoteManager />
           <Router/>
         </PopupManager>
       </ToastManager>
     </AuthManager>
-    
   );
 }
 
