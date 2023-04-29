@@ -68,8 +68,8 @@ export default function TrainingHome() {
         newList = newList.filter((w) => !!w.kanji && w.kanji !== "");
       }
       
-      if (settings.today) {
-        newList = newList.filter((w) => w.createdAt && moment(w.createdAt).isSame(moment(), "day"));
+      if (settings.createdSince > 0) {
+        newList = newList.filter((w) => (w.createdAt && moment(w.createdAt).isBetween(moment().subtract(settings.createdSince, 'days'), moment(), 'day', '[]')));
       }
       const lengthBeforeNoDouble = newList.length;
       if (settings.randomType === TrainingRandomType.NoDouble) {

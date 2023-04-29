@@ -1,5 +1,6 @@
 import { ChangeEvent, FormEvent, Fragment, useMemo, useState } from "react";
 import Checkbox from "src/components/utils/Checkbox";
+import Slider from "src/components/utils/Slider";
 import { TrainingFilters, TrainingLanguage, TrainingRandomType, TrainingSettingsData, TrainingSubject, TrainingType } from "src/models/training";
 
 import "src/styles/training/trainingSettings.scss";
@@ -12,7 +13,6 @@ const languageToString = {
 
 const filtersToString = {
     [TrainingFilters.Favorites]: "Favoris",
-    [TrainingFilters.Today]: "Ajoutés aujourd'hui",
 }
 
 const randomTypeToString = {
@@ -41,15 +41,18 @@ export default function TrainingSettings({onStart: onSettingsChange}: Props) {
             [TrainingLanguage.FromKana]: false,
             [TrainingLanguage.FromKanji]: false,
             [TrainingFilters.Favorites]: false,
-            [TrainingFilters.Today]: false,
+            createdSince: 0,
             randomType: TrainingRandomType.Full,
         }
     )
+
+    console.log(values);
 
     function handleChange (event: ChangeEvent<HTMLInputElement>) {
         const { name, value, type, checked } = event.target;
         let processedValue: any = value;
         if (type === "checkbox") processedValue = checked;
+        if (type === "range") processedValue = parseInt(processedValue);
         const newValues = { ...values, [name]: processedValue };
         localStorage.setItem(settingsKey, JSON.stringify(newValues));
         setValues(newValues);
@@ -129,6 +132,16 @@ export default function TrainingSettings({onStart: onSettingsChange}: Props) {
                             onChange={handleChange}
                         />
                     </Fragment>)}
+                    <label>Créé depuis : </label>
+                    <Slider
+                        id="todayFilter"
+                        value={values.createdSince}
+                        name="createdSince"
+                        onChange={(__, e) => handleChange(e)}
+                        formatValue={(v) => v === 0 ?
+                            "Desactivé"
+                            : `${v} jour${v > 1 ? "s" : ""}`}
+                    />
                 </section>
                 <button className="button" type="submit">Lancer l'entrainement</button>
             </form>

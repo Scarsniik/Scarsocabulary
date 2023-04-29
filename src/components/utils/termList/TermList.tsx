@@ -14,6 +14,7 @@ import ExportButton from "src/components/utils/termList/ExportButton";
 import DropDownMenu from "src/components/utils/DropDownMenu";
 
 import "src/styles/vocabulary/vocabularyList.scss";
+import Slider from "src/components/utils/Slider";
 
 export interface Column<T> {
     label: string;
@@ -21,7 +22,7 @@ export interface Column<T> {
 }
 
 export interface Filters {
-    today: boolean;
+    createdSince: number;
 }
 
 interface Props<T> {
@@ -121,11 +122,14 @@ export default function TermList<T>(props: Props<T>) {
                         content={[{
                             content: (
                                 <div>
-                                    <label htmlFor="todayFilter">Créé aujourd'hui</label>
-                                    <Checkbox
+                                    <label htmlFor="todayFilter">Crée depuis :</label>
+                                    <Slider
                                         id="todayFilter"
-                                        checked={filters.today}
-                                        onChange={() => onFilterChange({...filters, ...{today: !filters.today}})}
+                                        value={filters.createdSince}
+                                        onChange={(v) => onFilterChange({...filters, ...{createdSince: v}})}
+                                        formatValue={(v) => v === 0 ?
+                                            "Desactivé"
+                                            : `${v} jour${v > 1 ? "s" : ""}`}
                                     />
                                 </div>
                             )

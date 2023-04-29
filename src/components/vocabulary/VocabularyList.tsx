@@ -14,16 +14,22 @@ export default function VocabularyList() {
     const [vocabulary, setVocabulary] = useState<Word[] | undefined>(undefined);
     const [refresh, setRefresh] = useState<number>(0);
     const [filters, setFilters] = useState<Filters>({
-        today: false,
+        createdSince: 0,
     });
 
     const displayed = useMemo(() => vocabulary?.filter((w) => {
         let keep = true;
-        if (filters.today && (!w.createdAt || !moment(w.createdAt).isSame(moment(), "day"))) {
+        
+        if (
+            filters.createdSince > 0 &&
+            (!w.createdAt || !moment(w.createdAt).isBetween(moment().subtract(filters.createdSince, 'days'), moment(), 'day', '[]'))
+        ) {
             keep = false;
         }
         return keep;
     }), [filters, vocabulary]);
+
+    console.log(displayed);
 
     useEffect(() => {
         fetchVocabulary();

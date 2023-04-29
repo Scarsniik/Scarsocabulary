@@ -14,7 +14,6 @@ export enum TrainingLanguage {
 }
 
 export enum TrainingFilters {
-    Today = "today",
     Favorites = "favorites",
 }
 
@@ -26,7 +25,8 @@ export enum TrainingRandomType {
 type ValidKey = keyof typeof TrainingSubject | keyof typeof TrainingType | keyof typeof TrainingLanguage | keyof typeof TrainingFilters;
 
 export type TrainingSettingsData = {
-    randomType: TrainingRandomType
+    randomType: TrainingRandomType;
+    createdSince: number;
 } & {
     [K in ValidKey as `${(typeof TrainingSubject & typeof TrainingType & typeof TrainingLanguage & typeof TrainingFilters)[K]}`]: boolean;
 };
