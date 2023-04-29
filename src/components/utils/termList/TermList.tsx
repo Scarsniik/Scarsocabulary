@@ -10,12 +10,18 @@ import { ToastContext } from "src/contexts/ToastContext";
 import { ToastType } from "src/models/toast";
 import { PopupData } from "src/models/popup";
 
-import "src/styles/vocabulary/vocabularyList.scss";
 import ExportButton from "src/components/utils/termList/ExportButton";
+import DropDownMenu from "src/components/utils/DropDownMenu";
+
+import "src/styles/vocabulary/vocabularyList.scss";
 
 export interface Column<T> {
     label: string;
     render: (item: T) => JSX.Element | string;
+}
+
+export interface Filters {
+    today: boolean;
 }
 
 interface Props<T> {
@@ -25,11 +31,13 @@ interface Props<T> {
     columns: Column<T>[];
     extraActions?: JSX.Element[];
     sortBy: string;
+    filters?: Filters;
     searchFilterFunc: (item: T, search: string) => boolean;
     removeItem: (item: T) => Promise<boolean> | boolean;
     getDeleteMessage: (item: T, error?: boolean) => string
     getAddPopup: (item?: T) => PopupData;
     onImport: () => void;
+    onFilterChange?: (filters: Filters) => void;
 }
 
 export default function TermList<T>(props: Props<T>) {
@@ -45,6 +53,8 @@ export default function TermList<T>(props: Props<T>) {
         getDeleteMessage,
         getAddPopup,
         onImport,
+        onFilterChange,
+        filters,
     } = props;
     const [selectedItems, setSelectedItems] = useState<T[]>([]);
     const [search, setSearch] = useState<string>("");
@@ -106,6 +116,25 @@ export default function TermList<T>(props: Props<T>) {
         <div className="vocabularyList">
             <h2 className="title"> {title} </h2>
             <div className="tools">
+                { filters && onFilterChange &&
+                    <DropDownMenu
+                        content={[{
+                            content: (
+                                <div>
+                                    <label htmlFor="todayFilter">Créé aujourd'hui</label>
+                                    <Checkbox
+                                        id="todayFilter"
+                                        checked={filters.today}
+                                        onChange={() => onFilterChange({...filters, ...{today: !filters.today}})}
+                                    />
+                                </div>
+                            )
+                        }]}
+                        className="filters"
+                    >
+                        Filtres
+                    </DropDownMenu>
+                }
                 <div className="searchContainer">
                     <input
                         className="searchInput"

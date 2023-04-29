@@ -1,22 +1,33 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ApiVocabulary, WordResult } from "src/api/vocabulary";
 import Layout from "src/components/layout/Layout";
 import { Word } from "src/models/word";
 import { getAddWordPopup } from "src/components/vocabulary/AddWordPopup";
 import * as wanakana from "wanakana";
-import TermList, { Column } from "src/components/utils/termList/TermList";
+import TermList, { Column, Filters } from "src/components/utils/termList/TermList";
 
 import "src/styles/vocabulary/vocabularyList.scss";
 import { Link } from "react-router-dom";
-
+import moment from "moment";
 
 export default function VocabularyList() {
     const [vocabulary, setVocabulary] = useState<Word[] | undefined>(undefined);
     const [refresh, setRefresh] = useState<number>(0);
+    const [filters, setFilters] = useState<Filters>({
+        today: false,
+    });
+
+    const displayed = useMemo(() => vocabulary?.filter((w) => {
+        let keep = true;
+        if (filters.today && (!w.createdAt || !moment(w.createdAt).isSame(moment(), "day"))) {
+            keep = false;
+        }
+        return keep;
+    }), [filters, vocabulary]);
 
     useEffect(() => {
         fetchVocabulary();
-      }, [refresh]);
+    }, [refresh]);
 
     async function fetchVocabulary() {
         const result = await ApiVocabulary.getVocabulary();
@@ -36,9 +47,9 @@ export default function VocabularyList() {
     }
 
     function searchFilterFunc(word: Word, search: string) {
-        return (word.kana?.toLowerCase().includes(search.toLowerCase()) || wanakana.toRomaji(word.kana).includes(search.toLowerCase())) ||
+        return ((word.kana?.toLowerCase().includes(search.toLowerCase()) || wanakana.toRomaji(word.kana).includes(search.toLowerCase())) ||
             word.kanji?.toLowerCase().includes(search.toLowerCase()) ||
-            word.name?.toLowerCase().includes(search.toLowerCase());
+            word.name?.toLowerCase().includes(search.toLowerCase()));
     }
 
     function onAdd(newWord: Word) {
@@ -85,13 +96,15 @@ export default function VocabularyList() {
             extraActions={[]}
             getAddPopup={(word) => word ?  getAddWordPopup(onEdit, word) : getAddWordPopup(onAdd, word)}
             getDeleteMessage={getDeleteMessage}
-            items={vocabulary}
+            items={displayed}
             refresh={refresh}
             removeItem={removeWord}
             searchFilterFunc={searchFilterFunc}
             onImport={() => setRefresh(Date.now)}
             title="Vocabulaire"
             sortBy="name"
+            onFilterChange={setFilters}
+            filters={filters}
         />
     </Layout>);
 }

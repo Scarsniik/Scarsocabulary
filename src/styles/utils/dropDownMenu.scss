@@ -44,6 +44,7 @@
         background: grey;
         transition: height 0.2s;
         overflow: hidden;
+        z-index: 100;
 
         .dropDownMenuItem {
             position: relative;
