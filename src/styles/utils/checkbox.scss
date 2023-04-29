@@ -4,36 +4,45 @@ $label-color: #333;
 $checked-indicator-color: #333333c9;
 $checked-indicator-border-color: #333;
 
+.checkbox {
+  .custom-checkbox__indicator {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    background: $indicator-color;
+    border: 1px solid $indicator-border-color;
+    border-radius: 3px;
+    vertical-align: middle;
+    margin-right: 0.5em;
 
-.custom-checkbox__indicator {
-  display: inline-block;
-  width: 1rem;
-  height: 1rem;
-  background: $indicator-color;
-  border: 1px solid $indicator-border-color;
-  border-radius: 3px;
-  vertical-align: middle;
-  margin-right: 0.5em;
-}
+    &.radio {
+      border-radius: 50%;
+    }
+  }
 
-input[type="checkbox"] {
-  position: absolute;
-  left: -9999px;
-}
+  input {
+    position: absolute;
+    left: -9999px;
+  }
 
-input[type="checkbox"]:checked + .custom-checkbox__indicator {
-  position: relative;
-}
+  input:checked + .custom-checkbox__indicator {
+    position: relative;
+  }
 
-input[type="checkbox"]:checked + .custom-checkbox__indicator::before {
-  content: "";
-  background: $checked-indicator-color;
-  border-color: $checked-indicator-border-color;
-  border-radius: 3px;
-  display: block;
-  position: absolute;
-  top: 10%;
-  bottom: 10%;
-  left: 10%;
-  right: 10%;
+  input:checked + .custom-checkbox__indicator::before {
+    content: "";
+    background: $checked-indicator-color;
+    border-color: $checked-indicator-border-color;
+    border-radius: 3px;
+    display: block;
+    position: absolute;
+    top: 10%;
+    bottom: 10%;
+    left: 10%;
+    right: 10%;
+  }
+
+  input:checked + .custom-checkbox__indicator.radio::before {
+    border-radius: 50%;
+  }
 }

@@ -7,7 +7,7 @@ import CardTraining from "src/components/training/CardTraining";
 import TrainingSettings from "src/components/training/TrainingSettings";
 import { ToastContext } from "src/contexts/ToastContext";
 import { ToastType } from "src/models/toast";
-import { TrainingLanguage, TrainingSettingsData } from "src/models/training";
+import { TrainingLanguage, TrainingRandomType, TrainingSettingsData } from "src/models/training";
 import { Kanji, Word } from "src/models/word";
 import "src/styles/training/trainingHome.scss";
 
@@ -16,6 +16,7 @@ export default function TrainingHome() {
   const [words, setWords] = useState<Word[]>();
   const [kanjis, setKanjis] = useState<Kanji[]>();
   const [currentData, setCurrentData] = useState<Kanji|Word>();
+  const [alreadyUsed, setAlreadyUsed] = useState<(Kanji|Word)[]>([]);
   const [currentLanguage, setCurrentLanguage] = useState<TrainingLanguage>();
 
   const toast = useContext(ToastContext);
@@ -70,12 +71,21 @@ export default function TrainingHome() {
       if (settings.today) {
         newList = newList.filter((w) => w.createdAt && moment(w.createdAt).isSame(moment(), "day"));
       }
-
+      const lengthBeforeNoDouble = newList.length;
+      if (settings.randomType === TrainingRandomType.NoDouble) {
+        newList = newList.filter((w) => !alreadyUsed?.includes(w));
+      }
       if (newList.length === 0) {
         toast.add({type: ToastType.Error, title: "Erreur", body: "Aucun mot ne corrrespond à la séléction."});
         return;
       }
       const randomWord = newList[Math.floor(Math.random() * newList.length)];
+
+      if (settings.randomType === TrainingRandomType.NoDouble) {
+        let newAlreadyUsed = [...alreadyUsed, randomWord];
+        if (newAlreadyUsed.length === lengthBeforeNoDouble) newAlreadyUsed = [];
+        setAlreadyUsed(newAlreadyUsed);
+      }
 
       setCurrentData(randomWord);
       setCurrentLanguage(randomLanguage);

@@ -18,8 +18,15 @@ export enum TrainingFilters {
     Favorites = "favorites",
 }
 
+export enum TrainingRandomType {
+    Full = "full",
+    NoDouble = "noDouble",
+}
+
 type ValidKey = keyof typeof TrainingSubject | keyof typeof TrainingType | keyof typeof TrainingLanguage | keyof typeof TrainingFilters;
 
 export type TrainingSettingsData = {
+    randomType: TrainingRandomType
+} & {
     [K in ValidKey as `${(typeof TrainingSubject & typeof TrainingType & typeof TrainingLanguage & typeof TrainingFilters)[K]}`]: boolean;
 };

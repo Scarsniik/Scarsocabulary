@@ -12,21 +12,24 @@ interface Props {
     className?: string;
     name?: string
     key?: string | number;
+    radio?: boolean;
+    value?: any;
 }
 
-function Checkbox ({ checked, onChange, className, id, name }: Props) {
+function Checkbox ({ checked, onChange, className, id, name, radio, value }: Props) {
     const [randomId] = useState(id ?? uuidv4());
 
     return (
-        <span className="checkbox">
+        <span className={classNames("checkbox", radio && "radio")}>
             <input
-                type="checkbox"
+                type={radio ? "radio" : "checkbox"}
                 id={randomId}
                 checked={checked}
                 onChange={onChange}
                 name={name}
+                value={value}
             />
-            <label htmlFor={randomId} className={classNames("custom-checkbox__indicator", className)} />
+            <label htmlFor={randomId} className={classNames("custom-checkbox__indicator", radio && "radio", className)} />
         </span>
     );
 }

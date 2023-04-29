@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, Fragment, useMemo, useState } from "react";
 import Checkbox from "src/components/utils/Checkbox";
-import { TrainingFilters, TrainingLanguage, TrainingSettingsData, TrainingSubject, TrainingType } from "src/models/training";
+import { TrainingFilters, TrainingLanguage, TrainingRandomType, TrainingSettingsData, TrainingSubject, TrainingType } from "src/models/training";
 
 import "src/styles/training/trainingSettings.scss";
 
@@ -13,6 +13,11 @@ const languageToString = {
 const filtersToString = {
     [TrainingFilters.Favorites]: "Favoris",
     [TrainingFilters.Today]: "Ajoutés aujourd'hui",
+}
+
+const randomTypeToString = {
+    [TrainingRandomType.Full]: "Aléatoire",
+    [TrainingRandomType.NoDouble]: "Aléatoire sans remise",
 }
 
 const settingsKey = "trainingSettings";
@@ -37,6 +42,7 @@ export default function TrainingSettings({onStart: onSettingsChange}: Props) {
             [TrainingLanguage.FromKanji]: false,
             [TrainingFilters.Favorites]: false,
             [TrainingFilters.Today]: false,
+            randomType: TrainingRandomType.Full,
         }
     )
 
@@ -93,6 +99,21 @@ export default function TrainingSettings({onStart: onSettingsChange}: Props) {
                             id={languageKey}
                             checked={(values[languageValue])}
                             onChange={handleChange}
+                        />
+                    </Fragment>)}
+                </section>
+                <section className="subject">
+                    <p className="sectionTitle">Type de tirage :</p>
+                    { Object.entries(TrainingRandomType).map(([randomTypeKey, randomTypeValue], key) => <Fragment key={key}>
+                        <label key={`label-${key}`} htmlFor={randomTypeKey}>{randomTypeToString[randomTypeValue]} : </label>
+                        <Checkbox
+                            key={key}
+                            name="randomType"
+                            id={randomTypeKey}
+                            value={randomTypeValue}
+                            checked={(values.randomType === randomTypeValue)}
+                            onChange={handleChange}
+                            radio
                         />
                     </Fragment>)}
                 </section>
