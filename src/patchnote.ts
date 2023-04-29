@@ -5,7 +5,7 @@ export const patchnote: Patchnote[] = [
         version: "1.0.4",
         date: "29/04/2023 22h20",
         changes: [
-            "Change la case à coché par filtrer les mots par date pour un slider pour plus de précision (de 1 à 14 jours)",
+            "Change la case à coché par filtrer les mots par date pour un slider pour plus de précision (de 1 à 14 jours). Ne fonctionne pas pour les mots créés avant le 27/04 car ceux ci n'ont pas de date associé",
             "Réduction de la taille du drop down menu des filtres dans les listes",
         ]
     },
