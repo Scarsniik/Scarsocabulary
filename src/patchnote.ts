@@ -2,6 +2,14 @@ import { Patchnote } from "src/models/patchnote";
 
 export const patchnote: Patchnote[] = [
     {
+        version: "1.1.1",
+        date: "30/04/2023 23h15",
+        changes: [
+            "Ajout de filtre par tag dans la liste de vocabulaire",
+            "Quelques fixes liés aux tags",
+        ]
+    },
+    {
         version: "1.1.0",
         date: "30/04/2023 20h30",
         changes: [
