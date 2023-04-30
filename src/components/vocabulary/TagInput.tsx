@@ -36,7 +36,8 @@ export default function TagInput ({ className, currentTags, tags, createDisabled
         setFoundTags(await ApiTags.getTags());
     }
 
-    async function handleAdd() {
+    async function handleAdd(e: any) {
+        e.preventDefault();
         const result = await ApiTags.addTag(searchValue)
         if (result.status === TagResult.Done) {
             handleSelectTag(result.content as Tag);
