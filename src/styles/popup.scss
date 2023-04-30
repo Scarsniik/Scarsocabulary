@@ -20,7 +20,7 @@
         margin: auto;
 
         &:not(.notScrollable) {
-            overflow-y: hidden;
+            overflow-y: auto;
         }
         .popupHeader {
             display: flex;
