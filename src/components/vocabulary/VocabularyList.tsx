@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ApiVocabulary, WordResult } from "src/api/vocabulary";
 import Layout from "src/components/layout/Layout";
-import { Word } from "src/models/word";
+import { Tag, Word } from "src/models/word";
 import { getAddWordPopup } from "src/components/vocabulary/AddWordPopup";
 import * as wanakana from "wanakana";
 import TermList, { Column, Filters } from "src/components/utils/termList/TermList";
@@ -9,29 +9,47 @@ import TermList, { Column, Filters } from "src/components/utils/termList/TermLis
 import "src/styles/vocabulary/vocabularyList.scss";
 import { Link } from "react-router-dom";
 import moment from "moment";
+import { ApiTags } from "src/api/tags";
+import Slider from "src/components/utils/Slider";
+import TagDisplay from "src/components/vocabulary/TagDisplay";
+import TagInput from "src/components/vocabulary/TagInput";
 
 export default function VocabularyList() {
     const [vocabulary, setVocabulary] = useState<Word[] | undefined>(undefined);
     const [refresh, setRefresh] = useState<number>(0);
+    const [tags, setTags] = useState<Tag[] | undefined>();
+    const [tagsForFilter, setTagsForFilter] = useState<Tag[]>([]);
     const [filters, setFilters] = useState<Filters>({
         createdSince: 0,
     });
 
     const displayed = useMemo(() => vocabulary?.filter((w) => {
         let keep = true;
-        
         if (
             filters.createdSince > 0 &&
             (!w.createdAt || !moment(w.createdAt).isBetween(moment().subtract(filters.createdSince, 'days'), moment(), 'day', '[]'))
-        ) {
-            keep = false;
+        ) keep = false;
+        const hadTags = w.tags && w.tags.length > 0;
+        if ((hadTags && !tagsForFilter.some(t => (w.tags as string[]).includes(t._id as string))) || (!hadTags && tagsForFilter.length > 0)) {
+            keep = false
         }
         return keep;
-    }), [filters, vocabulary]);
+    }), [filters, vocabulary, tagsForFilter]);
 
     useEffect(() => {
         fetchVocabulary();
+        fetchTags();
     }, [refresh]);
+
+    useEffect(() => {
+        if (!tags) {
+            fetchTags();
+        }
+    }, [tags]);
+
+    async function fetchTags() {
+        setTags(await ApiTags.getTags());
+    }
 
     async function fetchVocabulary() {
         const result = await ApiVocabulary.getVocabulary();
@@ -77,6 +95,32 @@ export default function VocabularyList() {
         );
     }
 
+    async function handleAddTag(tag: Tag) {
+        setTagsForFilter([...tagsForFilter, tag]);
+    }
+
+    async function handleRemoveTag(tag: Tag) {
+        setTagsForFilter(tagsForFilter.filter(t => t._id !== tag._id));
+    }
+
+    function renderFilters() {
+        return [
+            <div className="filters">
+                <label htmlFor="todayFilter">Crée depuis :</label>
+                <Slider
+                    id="todayFilter"
+                    value={filters.createdSince}
+                    onChange={(v) => setFilters({...filters, ...{createdSince: v}})}
+                    formatValue={(v) => v === 0 ?
+                        "Desactivé"
+                        : `${v} jour${v > 1 ? "s" : ""}`}
+                />
+                {tagsForFilter?.map((t, i) => <TagDisplay key={i} tag={t as Tag} onRemove={handleRemoveTag}/>)}
+                <TagInput currentTags={tagsForFilter as Tag[]} tags={tags} createDisabled handleSelectTag={handleAddTag}/>
+            </div>
+        ];
+    }
+
     const column: Column<Word>[] = [
         {
             label: "Nom",
@@ -98,7 +142,7 @@ export default function VocabularyList() {
         <TermList<Word>
             columns={column}
             extraActions={[]}
-            getAddPopup={(word) => word ?  getAddWordPopup(onEdit, word) : getAddWordPopup(onAdd, word)}
+            getAddPopup={(word) => word ?  getAddWordPopup(onEdit, word, tags) : getAddWordPopup(onAdd, word, tags)}
             getDeleteMessage={getDeleteMessage}
             items={displayed}
             refresh={refresh}
@@ -107,8 +151,7 @@ export default function VocabularyList() {
             onImport={() => setRefresh(Date.now)}
             title="Vocabulaire"
             sortBy="name"
-            onFilterChange={setFilters}
-            filters={filters}
+            filters={renderFilters()}
         />
     </Layout>);
 }

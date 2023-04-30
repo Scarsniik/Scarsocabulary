@@ -32,13 +32,12 @@ interface Props<T> {
     columns: Column<T>[];
     extraActions?: JSX.Element[];
     sortBy: string;
-    filters?: Filters;
+    filters?: JSX.Element[];
     searchFilterFunc: (item: T, search: string) => boolean;
     removeItem: (item: T) => Promise<boolean> | boolean;
     getDeleteMessage: (item: T, error?: boolean) => string
     getAddPopup: (item?: T) => PopupData;
     onImport: () => void;
-    onFilterChange?: (filters: Filters) => void;
 }
 
 export default function TermList<T>(props: Props<T>) {
@@ -54,7 +53,6 @@ export default function TermList<T>(props: Props<T>) {
         getDeleteMessage,
         getAddPopup,
         onImport,
-        onFilterChange,
         filters,
     } = props;
     const [selectedItems, setSelectedItems] = useState<T[]>([]);
@@ -117,28 +115,6 @@ export default function TermList<T>(props: Props<T>) {
         <div className="vocabularyList">
             <h2 className="title"> {title} </h2>
             <div className="tools">
-                { filters && onFilterChange &&
-                    <DropDownMenu
-                        content={[{
-                            content: (
-                                <div>
-                                    <label htmlFor="todayFilter">Crée depuis :</label>
-                                    <Slider
-                                        id="todayFilter"
-                                        value={filters.createdSince}
-                                        onChange={(v) => onFilterChange({...filters, ...{createdSince: v}})}
-                                        formatValue={(v) => v === 0 ?
-                                            "Desactivé"
-                                            : `${v} jour${v > 1 ? "s" : ""}`}
-                                    />
-                                </div>
-                            )
-                        }]}
-                        className="filters"
-                    >
-                        Filtres
-                    </DropDownMenu>
-                }
                 <div className="searchContainer">
                     <input
                         className="searchInput"
@@ -157,6 +133,7 @@ export default function TermList<T>(props: Props<T>) {
                     <button onClick={openAddForm} className="addButton"><Svg src={AddIcon}/></button>
                 </div>
             </div>
+            <div>{filters?.[0]}</div>
             <p className="resultCount"> {displayedItems && displayedItems?.length > 0 && `${displayedItems?.length} mots`} </p>
             { displayedItems && displayedItems.length > 0 ? (
                 <table>

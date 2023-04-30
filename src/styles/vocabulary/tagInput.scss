@@ -1,6 +1,9 @@
-.tagInput {
+.tagInput.dropDownMenu {
+    display: inline-block;
     height: fit-content;
+    width: fit-content;
     margin: 0.5rem 0.2rem;
+    
     .dropDownMenuButton {
         padding: 0;
         border-radius: 10px;
