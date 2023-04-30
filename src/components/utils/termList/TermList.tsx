@@ -11,10 +11,8 @@ import { ToastType } from "src/models/toast";
 import { PopupData } from "src/models/popup";
 
 import ExportButton from "src/components/utils/termList/ExportButton";
-import DropDownMenu from "src/components/utils/DropDownMenu";
 
 import "src/styles/vocabulary/vocabularyList.scss";
-import Slider from "src/components/utils/Slider";
 
 export interface Column<T> {
     label: string;
