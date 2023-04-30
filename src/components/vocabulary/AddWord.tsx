@@ -1,26 +1,30 @@
 import React, { useContext, useMemo, useState } from "react";
 import { ApiVocabulary } from "src/api/vocabulary";
 import { ToastContext } from "src/contexts/ToastContext";
-import { Word } from "src/models/word";
+import { Tag, Word } from "src/models/word";
 import { classNames } from "src/utils/classNames";
 
 import "src/styles/vocabulary/addWord.scss"
 import { ToastType } from "src/models/toast";
 import { PopupContext } from "src/contexts/PopupContext";
+import TagInput from "src/components/vocabulary/TagInput";
+import TagDisplay from "src/components/vocabulary/TagDisplay";
 
 interface Props {
     onAdd: (w: Word) => void;
     defaultWord?: Word;
+    tags?: Tag[];
 }
 
 export default function AddWord(props: Props) {
-    const { onAdd, defaultWord } = props;
+    const { onAdd, defaultWord, tags } = props;
     const emptyForm = useMemo(() => defaultWord || {
         name: "",
         kana: "",
         kanji: "",
     }, [defaultWord])
     const [word, setWord] = useState<Word>(emptyForm);
+    const [wordsTags, setWordsTags] = useState<Tag[]>((tags && defaultWord) ? tags.filter(t => word.tags?.includes(t._id as string)) : []);
 
     const [errors, setErrors] = useState({
         name: false,
@@ -31,18 +35,22 @@ export default function AddWord(props: Props) {
     const toasts = useContext(ToastContext);
     const popup = useContext(PopupContext);
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    function handleChange (event: React.ChangeEvent<HTMLInputElement>) {
         setWord({ ...word, [event.target.id]: event.target.value });
-    };
+    }
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
         const newErrors = errors;
         newErrors.name = word.name === "";
         newErrors.kana = word.kana === "";
 
         if (!newErrors.name && !newErrors.kana && !newErrors.kanji) {
-            const result = defaultWord ? await ApiVocabulary.editWord(word) : await ApiVocabulary.addWord(word);
+            const newWord: Word = {
+                ...word,
+                tags: wordsTags.map(t => t._id as string),
+            }
+            const result = defaultWord ? await ApiVocabulary.editWord(newWord) : await ApiVocabulary.addWord(newWord);
             if (result.status === ApiVocabulary.AddWordResult.Done) {
                 onAdd(result.content as Word);
                 toasts.add({
@@ -53,18 +61,27 @@ export default function AddWord(props: Props) {
                 if (defaultWord) popup.close();
                 const form = event.target as HTMLFormElement;
                 setWord(emptyForm);
+                setWordsTags([]);
                 form.getElementsByTagName("input")[0].focus();
             } else {
                 toasts.add({
                     title: "Erreur",
-                    body: `Un erreur s'est produite lors de l'ajout du mot.`,
+                    body: `Une erreur s'est produite lors de l'ajout du mot.`,
                     type: ToastType.Error,
                 })
             }
         } else {
             setErrors(newErrors);
         }
-    };
+    }
+
+    async function handleAddTag(tag: Tag) {
+        setWordsTags([...wordsTags, tag]);
+    }
+
+    async function handleRemoveTag(tag: Tag) {
+        setWordsTags(wordsTags.filter(t => t._id !== tag._id));
+    }
 
     return (
         <div className="addWord">
@@ -93,8 +110,12 @@ export default function AddWord(props: Props) {
                     onChange={handleChange}
                     placeholder="Kanji"
                 />
+                <section className="tags">
+                    {wordsTags?.map((t, i) => <TagDisplay key={i} tag={t as Tag} onRemove={handleRemoveTag}/>)}
+                    <TagInput currentTags={wordsTags as Tag[]} tags={tags} handleSelectTag={handleAddTag}/>
+                </section>
 
-                <button type="submit">{defaultWord ? "Modifier" : "Ajouter"}</button>
+                <button className="button" type="submit">{defaultWord ? "Modifier" : "Ajouter"}</button>
             </form>
         </div>
     );

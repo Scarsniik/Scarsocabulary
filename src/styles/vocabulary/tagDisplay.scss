@@ -1,0 +1,17 @@
+.tag {
+    position: relative;
+    padding: 0.5rem 2rem 0.5rem 1rem;
+    border-radius: 10px;
+    background-color: rgb(95, 95, 95);
+    margin: 0.5rem 0.2rem;
+
+    button {
+        position: absolute;
+        top: 50%;
+        right: 0.5rem;
+        transform: translateY(-50%);
+        background-color: transparent;
+        border: none;
+        color: white;
+    }
+}

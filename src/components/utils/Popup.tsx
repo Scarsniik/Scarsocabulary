@@ -14,7 +14,7 @@ export function Popup() {
     return show ? (
         <div className={classNames("popupContainer", show && "open")}>
             <OutsideAlerter onClickOutside={popup.close}>
-                <div className="popup">
+                <div className={classNames("popup", content?.notScrollable && "notScrollable")}>
                     <div className="popupHeader">
                     <h3>{content?.title}</h3>
                     <button className="popupClose" onClick={() => popup.close()}>X</button>

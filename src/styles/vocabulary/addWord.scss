@@ -11,12 +11,23 @@
             }
         }
 
-        button {
+        .button {
             padding: 0.5rem;
             border: 1px solid white;
             background-color: transparent;
             border-style: solid;
             color: white;
+        }
+
+        .tags {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+
+            input {
+                margin: 0;
+            }
         }
     }
 }

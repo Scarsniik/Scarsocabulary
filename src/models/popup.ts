@@ -16,4 +16,5 @@ export interface PopupData {
     title: JSX.Element | string | null;
     actions?: PopupAction[] | null;
     onClose?: () => void;
+    notScrollable?: boolean;
 }

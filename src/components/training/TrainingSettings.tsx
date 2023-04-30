@@ -45,8 +45,6 @@ export default function TrainingSettings({onStart: onSettingsChange}: Props) {
         }, ...(savedSettings ?? {})}
     )
 
-    console.log(values);
-
     function handleChange (event: ChangeEvent<HTMLInputElement>) {
         const { name, value, type, checked } = event.target;
         let processedValue: any = value;

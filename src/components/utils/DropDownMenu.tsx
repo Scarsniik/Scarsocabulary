@@ -11,7 +11,7 @@ interface Props {
   content: MenuItem[];
   className?: string;
   children?: JSX.Element | string;
-  refreshTrigger?: any[];
+  refreshTrigger?: number;
   disabled?: boolean;
 }
 

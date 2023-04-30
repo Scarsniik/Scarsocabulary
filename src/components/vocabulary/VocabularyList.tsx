@@ -29,8 +29,6 @@ export default function VocabularyList() {
         return keep;
     }), [filters, vocabulary]);
 
-    console.log(displayed);
-
     useEffect(() => {
         fetchVocabulary();
     }, [refresh]);

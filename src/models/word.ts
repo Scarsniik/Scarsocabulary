@@ -5,6 +5,7 @@ export interface Word {
     name: string;
     kana: string;
     kanji: string;
+    tags?: string[];
     createdAt?: string;
     updatedAt?: string;
 }
@@ -13,6 +14,14 @@ export interface Kanji {
     _id?: string;
     name: string;
     kanji: string;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+export interface Tag {
+    _id?: string;
+    name: string;
+    user_id?: string;
     createdAt?: string;
     updatedAt?: string;
 }

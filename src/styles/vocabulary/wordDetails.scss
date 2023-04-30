@@ -10,6 +10,25 @@
     h3 {
         text-align: center;
         font-size: 1.5rem;
+        width: 100%;
+    }
+
+    .word {
+        p {
+           text-align: center;
+
+           &.japanese {
+                font-size: 1.2rem;
+                font-weight: bold;
+           }
+        }
+    }
+
+    .tags {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
     }
     .data {
         width: 100%;
