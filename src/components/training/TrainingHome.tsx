@@ -71,6 +71,13 @@ export default function TrainingHome() {
       if (settings.createdSince > 0) {
         newList = newList.filter((w) => (w.createdAt && moment(w.createdAt).isBetween(moment().subtract(settings.createdSince, 'days'), moment(), 'day', '[]')));
       }
+      if (settings.tags.length > 0) {
+        newList = newList.filter((w) => {
+          const word = w as Word;
+          const hadTags = word.tags && word.tags.length > 0;
+          return hadTags && settings.tags.some(t => (word.tags as string[]).includes(t))
+        });
+      }
       const lengthBeforeNoDouble = newList.length;
       if (settings.randomType === TrainingRandomType.NoDouble) {
         newList = newList.filter((w) => !alreadyUsed?.includes(w));

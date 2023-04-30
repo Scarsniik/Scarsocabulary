@@ -1,7 +1,11 @@
-import { ChangeEvent, FormEvent, Fragment, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, Fragment, useEffect, useMemo, useState } from "react";
+import { ApiTags } from "src/api/tags";
 import Checkbox from "src/components/utils/Checkbox";
 import Slider from "src/components/utils/Slider";
+import TagDisplay from "src/components/vocabulary/TagDisplay";
+import TagInput from "src/components/vocabulary/TagInput";
 import { TrainingFilters, TrainingLanguage, TrainingRandomType, TrainingSettingsData, TrainingSubject, TrainingType } from "src/models/training";
+import { Tag } from "src/models/word";
 
 import "src/styles/training/trainingSettings.scss";
 
@@ -42,8 +46,24 @@ export default function TrainingSettings({onStart: onSettingsChange}: Props) {
             [TrainingFilters.Favorites]: false,
             createdSince: 0,
             randomType: TrainingRandomType.Full,
+            tags: []
         }, ...(savedSettings ?? {})}
     )
+    const [tags, setTags] = useState<Tag[] | undefined>();
+
+    useEffect(() => {
+        if (!tags) {
+            fetchTags();
+        }
+    }, [tags]);
+
+    useEffect(() => {
+        localStorage.setItem(settingsKey, JSON.stringify(values));
+    }, [values])
+
+    async function fetchTags() {
+        setTags(await ApiTags.getTags());
+    }
 
     function handleChange (event: ChangeEvent<HTMLInputElement>) {
         const { name, value, type, checked } = event.target;
@@ -51,15 +71,23 @@ export default function TrainingSettings({onStart: onSettingsChange}: Props) {
         if (type === "checkbox") processedValue = checked;
         if (type === "range") processedValue = parseInt(processedValue);
         const newValues = { ...values, [name]: processedValue };
-        localStorage.setItem(settingsKey, JSON.stringify(newValues));
         setValues(newValues);
-      }
+    }
+
+    async function handleAddTag(tag: Tag) {
+        setValues({...values, tags: [...values.tags, tag._id as string]});
+    }
+
+    async function handleRemoveTag(tag: Tag) {
+        setValues({...values, tags: values.tags.filter(t => t !== tag._id)});
+    }
 
     function start(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         onSettingsChange(values);
     }
-    return (
+    const currentTags = tags && values.tags?.map(t => tags.find(ct => ct._id === t) as Tag);
+    return currentTags ? (
         <div className="trainingSettings">
             <h3>Settings</h3>
             <form onSubmit={start}>
@@ -139,9 +167,18 @@ export default function TrainingSettings({onStart: onSettingsChange}: Props) {
                             "Desactivé"
                             : `${v} jour${v > 1 ? "s" : ""}`}
                     />
+                    <div className="tags">
+                        {currentTags?.map((t, i) => <TagDisplay key={i} tag={t} onRemove={handleRemoveTag}/>)}
+                        <TagInput
+                            currentTags={currentTags}
+                            tags={tags}
+                            createDisabled
+                            handleSelectTag={handleAddTag}
+                        />
+                    </div>
                 </section>
                 <button className="button" type="submit">Lancer l'entrainement</button>
             </form>
         </div>
-    );
+    ) : <></>;
 }

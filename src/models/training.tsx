@@ -27,6 +27,7 @@ type ValidKey = keyof typeof TrainingSubject | keyof typeof TrainingType | keyof
 export type TrainingSettingsData = {
     randomType: TrainingRandomType;
     createdSince: number;
+    tags: string[]
 } & {
     [K in ValidKey as `${(typeof TrainingSubject & typeof TrainingType & typeof TrainingLanguage & typeof TrainingFilters)[K]}`]: boolean;
 };
