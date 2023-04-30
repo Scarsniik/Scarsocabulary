@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { classNames } from 'src/utils/classNames';
 import { Tag } from 'src/models/word';
 
@@ -22,7 +22,7 @@ export default function TagInput ({ className, currentTags, tags, createDisabled
     const [foundTags, setFoundTags] = useState<Tag[] | undefined>(tags);
 
     const toasts = useContext(ToastContext);
-
+    const inputRef = useRef<HTMLInputElement>();
     const filteredTags = useMemo(() => foundTags && foundTags.filter((t) => !currentTags?.find((ct) => ct.name === t.name)), [currentTags, foundTags]);
     const searchedTags = useMemo(() => filteredTags && filteredTags.filter((t) => t.name.toLowerCase().includes(searchValue.toLowerCase())), [filteredTags, searchValue]);
 
@@ -40,6 +40,8 @@ export default function TagInput ({ className, currentTags, tags, createDisabled
         const result = await ApiTags.addTag(searchValue)
         if (result.status === TagResult.Done) {
             handleSelectTag(result.content as Tag);
+            setSearch("");
+            inputRef.current?.focus();
         } else {
             toasts.add({
                 title: "Erreur",
@@ -68,7 +70,7 @@ export default function TagInput ({ className, currentTags, tags, createDisabled
             ]: []}
             refreshTrigger={searchedTags && searchedTags.length}
         >
-            <input placeholder="Ajouter un tag" type="text" onChange={(e) => setSearch(e.target.value)}/>
+            <input placeholder="Ajouter un tag" ref={inputRef as any} type="text" value ={searchValue} onChange={(e) => setSearch(e.target.value)}/>
         </DropDownMenu>
     );
 }

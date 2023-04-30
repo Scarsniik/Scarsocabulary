@@ -99,6 +99,7 @@ export default function WordDetails() {
                     type: ToastType.Error,
                 });
             } else {
+                fetchTags();
                 fetch();
             }
         }
