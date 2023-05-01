@@ -30,7 +30,7 @@ export default function VocabularyList() {
             (!w.createdAt || !moment(w.createdAt).isBetween(moment().subtract(filters.createdSince, 'days'), moment(), 'day', '[]'))
         ) keep = false;
         const hadTags = w.tags && w.tags.length > 0;
-        if ((hadTags && !tagsForFilter.some(t => (w.tags as string[]).includes(t._id as string))) || (!hadTags && tagsForFilter.length > 0)) {
+        if ((hadTags && tagsForFilter.length > 0 && !tagsForFilter.some(t => (w.tags as string[]).includes(t._id as string))) || (!hadTags && tagsForFilter.length > 0)) {
             keep = false
         }
         return keep;
