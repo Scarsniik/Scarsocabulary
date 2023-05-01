@@ -85,7 +85,7 @@ export default function AddKanji(props: Props) {
                     placeholder="Kanji"
                 />
 
-                <button type="submit">{defaultKanji ? "Modifier" : "Ajouter"}</button>
+                <button className="button" type="submit">{defaultKanji ? "Modifier" : "Ajouter"}</button>
             </form>
         </div>
     );
