@@ -146,7 +146,7 @@ export default function TermList<T>(props: Props<T>) {
                     </thead>
                     <tbody>
                         {displayedItems.map((item, key) => (
-                        <tr key={key}>
+                        <tr key={(item as any)._id ?? key}>
                             <td>
                                 <Checkbox
                                     onChange={() => handleSelect(item)}

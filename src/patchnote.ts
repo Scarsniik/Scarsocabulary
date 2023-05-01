@@ -2,6 +2,13 @@ import { Patchnote } from "src/models/patchnote";
 
 export const patchnote: Patchnote[] = [
     {
+        version: "1.1.3",
+        date: "01/05/2023 17h40",
+        changes: [
+            "Ajout de filtre par date de création dans la liste de kanji",
+        ]
+    },
+    {
         version: "1.1.2",
         date: "30/04/2023 23h59",
         changes: [

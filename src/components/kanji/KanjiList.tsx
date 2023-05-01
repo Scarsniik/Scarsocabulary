@@ -1,18 +1,23 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ApiKanji, KanjiResult } from "src/api/kanjis";
 import Layout from "src/components/layout/Layout";
 import { Kanji } from "src/models/word";
 import { getAddKanjiPopup } from "src/components/kanji/AddKanjiPopup";
-import TermList, { Column } from "src/components/utils/termList/TermList";
+import TermList, { Column, Filters } from "src/components/utils/termList/TermList";
 import ExtractKanjiButton from "src/components/kanji/ExtractKanjiButton";
 
 import "src/styles/vocabulary/vocabularyList.scss";
+import moment from "moment";
+import Slider from "src/components/utils/Slider";
 
 
 export default function VocabularyList() {
     const [kanjis, setKanjis] = useState<Kanji[] | undefined>(undefined);
     const [refresh, setRefresh] = useState<number>(0);
-
+    const [filters, setFilters] = useState<Filters>({
+        createdSince: 0,
+    });
+    
     useEffect(() => {
         fetch();
       }, [refresh]);
@@ -21,6 +26,15 @@ export default function VocabularyList() {
         const result = await ApiKanji.getKanjis();
         setKanjis(result);
     }
+
+    const displayed = useMemo(() => kanjis?.filter((w) => {
+        let keep = true;
+        if (
+            filters.createdSince > 0 &&
+            (!w.createdAt || !moment(w.createdAt).isBetween(moment().subtract(filters.createdSince, 'days'), moment(), 'day', '[]'))
+        ) keep = false;
+        return keep;
+    }), [filters, kanjis]);
 
     async function removeKanji(kanji: Kanji): Promise<boolean> {
         if (!kanjis) return false;
@@ -60,6 +74,22 @@ export default function VocabularyList() {
         );
     }
 
+    function renderFilters() {
+        return [
+            <div className="filters">
+                <label htmlFor="todayFilter">Crée depuis : </label>
+                <Slider
+                    id="todayFilter"
+                    value={filters.createdSince}
+                    onChange={(v) => setFilters({...filters, ...{createdSince: v}})}
+                    formatValue={(v) => v === 0 ?
+                        "Desactivé"
+                        : `${v} jour${v > 1 ? "s" : ""}`}
+                />
+            </div>
+        ];
+    }
+
     const column: Column<Kanji>[] = [
         {
             label: "Nom",
@@ -74,16 +104,17 @@ export default function VocabularyList() {
     return ( <Layout center loading={!kanjis}>
         <TermList<Kanji>
             columns={column}
-            extraActions={[<ExtractKanjiButton onFinished={() => setRefresh(Date.now())}/>]}
+            extraActions={[<ExtractKanjiButton key="extract" onFinished={() => setRefresh(Date.now())}/>]}
             getAddPopup={(kanji) => kanji ? getAddKanjiPopup(onEdit, kanji) : getAddKanjiPopup(onAdd, kanji)}
             getDeleteMessage={getDeleteMessage}
-            items={kanjis}
+            items={displayed}
             refresh={refresh}
             removeItem={removeKanji}
             searchFilterFunc={searchFilterFunc}
             onImport={() => setRefresh(Date.now)}
             title="Kanji"
             sortBy="name"
+            filters={renderFilters()}
         />
     </Layout>);
 }
