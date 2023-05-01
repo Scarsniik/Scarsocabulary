@@ -16,7 +16,7 @@ import "src/styles/vocabulary/vocabularyList.scss";
 
 export interface Column<T> {
     label: string;
-    render: (item: T) => JSX.Element | string;
+    render: (item: T) => JSX.Element | string | number;
 }
 
 export interface Filters {
