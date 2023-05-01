@@ -102,6 +102,10 @@
             }
             td {
                 padding: 0.5rem 1rem;
+
+                &.actionsLine {
+                    width: 4.5rem;
+                }
             }
         }
 
