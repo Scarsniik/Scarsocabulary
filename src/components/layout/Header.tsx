@@ -22,6 +22,9 @@ export default function Header() {
         <Link to="/training">
           Entrainement
         </Link>
+        <Link to="/tags">
+          Tags
+        </Link>
       </> : <>
         <Link to="/login">
           Se connecter

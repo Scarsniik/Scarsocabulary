@@ -31,6 +31,8 @@ interface Props<T> {
     extraActions?: JSX.Element[];
     sortBy: string;
     filters?: JSX.Element[];
+    disableImport?: boolean;
+    counterLabel?: string;
     searchFilterFunc: (item: T, search: string) => boolean;
     removeItem: (item: T) => Promise<boolean> | boolean;
     getDeleteMessage: (item: T, error?: boolean) => string
@@ -46,6 +48,8 @@ export default function TermList<T>(props: Props<T>) {
         columns,
         extraActions,
         sortBy,
+        disableImport,
+        counterLabel,
         searchFilterFunc,
         removeItem,
         getDeleteMessage,
@@ -127,12 +131,14 @@ export default function TermList<T>(props: Props<T>) {
                         {extraActions}
                         <ExportButton<T> items={items as T[]}/>
                     </>}
-                    <ImportButton onImportSuccess={onImportSuccess}/>
+                    { !disableImport &&
+                        <ImportButton onImportSuccess={onImportSuccess}/>
+                    }
                     <button onClick={openAddForm} className="addButton"><Svg src={AddIcon}/></button>
                 </div>
             </div>
             <div>{filters?.[0]}</div>
-            <p className="resultCount"> {displayedItems && displayedItems?.length > 0 && `${displayedItems?.length} mots`} </p>
+            <p className="resultCount"> {displayedItems && displayedItems?.length > 0 && `${displayedItems?.length} ${counterLabel ?? "mots"}`} </p>
             { displayedItems && displayedItems.length > 0 ? (
                 <table>
                     <thead>

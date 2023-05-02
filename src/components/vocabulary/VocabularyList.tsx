@@ -62,6 +62,7 @@ export default function VocabularyList() {
         if ((await ApiVocabulary.removeWord(word._id as string)).status === WordResult.Done) {
             const newVocabulary = vocabulary.filter((w) => w.name !== word.name);
             setVocabulary(newVocabulary);
+            fetchVocabulary();
             return true;
         }
 
@@ -135,6 +136,10 @@ export default function VocabularyList() {
         {
             label: "Kanji",
             render: (item: Word) => item.kanji,
+        },
+        {
+            label: "Tag",
+            render: (item: Word) => item.tags ? item.tags.length : 0,
         }
     ]
 

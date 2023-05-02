@@ -2,6 +2,13 @@ import { Patchnote } from "src/models/patchnote";
 
 export const patchnote: Patchnote[] = [
     {
+        version: "1.1.4",
+        date: "02/05/2023 2h05",
+        changes: [
+            "Ajout de la page de gestion des tags",
+        ]
+    },
+    {
         version: "1.1.3",
         date: "01/05/2023 17h40",
         changes: [
