@@ -17,16 +17,26 @@ export default function TrainingHome() {
   const [kanjis, setKanjis] = useState<Kanji[]>();
   const [currentData, setCurrentData] = useState<Kanji|Word>();
   const [alreadyUsed, setAlreadyUsed] = useState<(Kanji|Word)[]>([]);
+  const [filteredList, setFilteredList] = useState<(Kanji|Word)[]>([]);
   const [currentLanguage, setCurrentLanguage] = useState<TrainingLanguage>();
 
   const toast = useContext(ToastContext);
 
   useEffect(() => {
-    if (words && kanjis) {
-      nextData();
+    if (!words) {
+      fetchVocabulary();
+    }
+    if (!kanjis) {
+      fetchKanji();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (settings && words && kanjis) {
+      filterData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [words, kanjis])
+  }, [settings, words, kanjis])
 
   async function fetchVocabulary() {
     setWords(await ApiVocabulary.getVocabulary());
@@ -36,10 +46,33 @@ export default function TrainingHome() {
     setKanjis(await ApiKanji.getKanjis());
   }
 
-  function onStart(settings: TrainingSettingsData) {
+  function onSettingsChanges(settings: TrainingSettingsData) {
     setSettings(settings);
-    fetchVocabulary();
-    fetchKanji();
+  }
+
+  function filterData() {
+    if (settings) {
+      let list: (Kanji|Word)[] = [];
+      if (settings.kanji) {
+        list = list.concat(kanjis as [])
+      }
+      if (settings.vocabulary) {
+        list = list.concat(words as [])
+      }
+      
+      if (settings.createdSince > 0) {
+        list = list.filter((w) => (w.createdAt && moment(w.createdAt).isBetween(moment().subtract(settings.createdSince, 'days'), moment(), 'day', '[]')));
+      }
+      if (settings.tags.length > 0) {
+        list = list.filter((w) => {
+          const word = w as Word;
+          const hadTags = word.tags && word.tags.length > 0;
+          return hadTags && settings.tags.some(t => (word.tags as string[]).includes(t))
+        });
+      }
+
+      setFilteredList(list);
+    }
   }
 
   function nextData() {
@@ -56,37 +89,18 @@ export default function TrainingHome() {
       }
       const randomLanguage = languageList[Math.floor(Math.random() * languageList.length)];
 
-      let newList: (Kanji|Word)[] = [];
-      if (settings.kanji) {
-        newList = newList.concat(kanjis as [])
-      }
-      if (settings.vocabulary) {
-        newList = newList.concat(words as [])
-      }
-
-      if (randomLanguage === TrainingLanguage.FromKanji) {
-        newList = newList.filter((w) => !!w.kanji && w.kanji !== "");
-      }
-      
-      if (settings.createdSince > 0) {
-        newList = newList.filter((w) => (w.createdAt && moment(w.createdAt).isBetween(moment().subtract(settings.createdSince, 'days'), moment(), 'day', '[]')));
-      }
-      if (settings.tags.length > 0) {
-        newList = newList.filter((w) => {
-          const word = w as Word;
-          const hadTags = word.tags && word.tags.length > 0;
-          return hadTags && settings.tags.some(t => (word.tags as string[]).includes(t))
-        });
-      }
-      const lengthBeforeNoDouble = newList.length;
-      if (settings.randomType === TrainingRandomType.NoDouble) {
-        newList = newList.filter((w) => !alreadyUsed?.includes(w));
-      }
-      if (newList.length === 0) {
+      if (filteredList.length === 0) {
         toast.add({type: ToastType.Error, title: "Erreur", body: "Aucun mot ne corrrespond à la séléction."});
         return;
       }
-      const randomWord = newList[Math.floor(Math.random() * newList.length)];
+
+      const lengthBeforeNoDouble = filteredList.length;
+      let list = filteredList;
+      if (settings.randomType === TrainingRandomType.NoDouble) {
+        list = list.filter((w) => !alreadyUsed?.includes(w));
+      }
+
+      const randomWord = list[Math.floor(Math.random() * list.length)];
 
       if (settings.randomType === TrainingRandomType.NoDouble) {
         let newAlreadyUsed = [...alreadyUsed, randomWord];
@@ -99,6 +113,10 @@ export default function TrainingHome() {
     }
   }
 
+  function onStart() {
+    nextData();
+  }
+
   return (
     <Layout center>
       <div className="trainingHome">
@@ -106,7 +124,7 @@ export default function TrainingHome() {
         { settings && currentData && currentLanguage ? (
           <CardTraining data={currentData} onFinish={nextData} language={currentLanguage}/>
         ) : (
-          <TrainingSettings onStart={onStart}/>
+          <TrainingSettings onSettingsChanges={onSettingsChanges} count={filteredList.length} onStart={onStart}/>
         )}
       </div>
     </Layout>

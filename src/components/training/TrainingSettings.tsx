@@ -27,10 +27,12 @@ const randomTypeToString = {
 const settingsKey = "trainingSettings";
 
 interface Props {
-    onStart: (settings: TrainingSettingsData) => void;
+    onSettingsChanges: (settings: TrainingSettingsData) => void;
+    onStart: () => void;
+    count: number;
 }
 
-export default function TrainingSettings({onStart: onSettingsChange}: Props) {
+export default function TrainingSettings({onSettingsChanges, count, onStart}: Props) {
     const savedSettings = useMemo(() => {
         const stringSettings = localStorage.getItem(settingsKey);
         return stringSettings ? JSON.parse(stringSettings) : undefined;
@@ -59,6 +61,7 @@ export default function TrainingSettings({onStart: onSettingsChange}: Props) {
 
     useEffect(() => {
         localStorage.setItem(settingsKey, JSON.stringify(values));
+        onSettingsChanges(values);
     }, [values])
 
     async function fetchTags() {
@@ -84,7 +87,7 @@ export default function TrainingSettings({onStart: onSettingsChange}: Props) {
 
     function start(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        onSettingsChange(values);
+        onStart();
     }
     const currentTags = tags && values.tags?.map(t => tags.find(ct => ct._id === t) as Tag);
     return currentTags ? (
@@ -177,7 +180,7 @@ export default function TrainingSettings({onStart: onSettingsChange}: Props) {
                         />
                     </div>
                 </section>
-                <button className="button" type="submit">Lancer l'entrainement</button>
+                <button className="button" type="submit">Commencer avec {count} données</button>
             </form>
         </div>
     ) : <></>;
