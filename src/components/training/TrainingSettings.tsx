@@ -64,7 +64,7 @@ export default function TrainingSettings({onSettingsChanges, count, onStart}: Pr
     useEffect(() => {
         localStorage.setItem(settingsKey, JSON.stringify(values));
         onSettingsChanges(values);
-    }, [values])
+    }, [values, onSettingsChanges])
 
     async function fetchTags() {
         setTags(await ApiTags.getTags());

@@ -1,11 +1,11 @@
-
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { TrainingLanguage, TrainingSubject } from "src/models/training";
+import { TrainingLanguage } from "src/models/training";
 import { Kanji, Word } from "src/models/word";
-import "src/styles/training/cardTraining.scss";
 import { classNames } from "src/utils/classNames";
 import { isWord } from "src/utils/types";
 import { ScoreChangesType, changeDataScore, getColorFromScore } from "src/utils/words";
+
+import "src/styles/training/cardTraining.scss";
 
 interface Props {
     data: Kanji | Word;
@@ -19,10 +19,6 @@ export default function CardTraining(props: Props) {
 
     const [showResponse, setShowResponse] = useState<boolean>(false);
     const [lastData, setLastData] = useState<Kanji | Word>();
-
-    const type = useMemo<TrainingSubject>(() => {
-        return isWord(data) ? TrainingSubject.Vocabulary : TrainingSubject.Kanji;
-    }, [data]);
 
     const toDisplay = useMemo<string>(() => {
         if (isWord(data)) {
@@ -48,7 +44,7 @@ export default function CardTraining(props: Props) {
                     return "ERROR";
             }
         }
-    }, [data, language, type]);
+    }, [data, language]);
 
     const showAnswer = useCallback(() => {
         setLastData(data);
