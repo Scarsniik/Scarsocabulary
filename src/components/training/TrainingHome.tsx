@@ -9,6 +9,8 @@ import { ToastContext } from "src/contexts/ToastContext";
 import { ToastType } from "src/models/toast";
 import { TrainingLanguage, TrainingRandomType, TrainingSettingsData } from "src/models/training";
 import { Kanji, Word } from "src/models/word";
+import { getRandomElementWithScore, testRandomElementWithScore } from "src/utils/words";
+
 import "src/styles/training/trainingHome.scss";
 
 export default function TrainingHome() {
@@ -29,6 +31,8 @@ export default function TrainingHome() {
     if (!kanjis) {
       fetchKanji();
     }
+    testRandomElementWithScore()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -75,7 +79,7 @@ export default function TrainingHome() {
     }
   }
 
-  function nextData() {
+  function nextData(responseData?: Kanji | Word) {
     if (words && settings) {
       const languageList: TrainingLanguage[] = [];
       if (settings.fromFrench) {
@@ -96,11 +100,20 @@ export default function TrainingHome() {
 
       const lengthBeforeNoDouble = filteredList.length;
       let list = filteredList;
+      if (responseData) {
+        const id = list.findIndex(d => d._id === responseData._id);
+        list[id] = responseData;
+      }
       if (settings.randomType === TrainingRandomType.NoDouble) {
         list = list.filter((w) => !alreadyUsed?.includes(w));
       }
 
-      const randomWord = list[Math.floor(Math.random() * list.length)];
+      let randomWord;
+      if (settings.randomType === TrainingRandomType.Weighted) {
+        randomWord = getRandomElementWithScore(list, 1.5);
+      } else {
+        randomWord = list[Math.floor(Math.random() * list.length)];
+      }
 
       if (settings.randomType === TrainingRandomType.NoDouble) {
         let newAlreadyUsed = [...alreadyUsed, randomWord];
@@ -113,18 +126,14 @@ export default function TrainingHome() {
     }
   }
 
-  function onStart() {
-    nextData();
-  }
-
   return (
     <Layout center>
       <div className="trainingHome">
         <h2 className="title">Entrainement</h2>
         { settings && currentData && currentLanguage ? (
-          <CardTraining data={currentData} onFinish={nextData} language={currentLanguage}/>
+          <CardTraining data={currentData} onFinish={nextData} language={currentLanguage} useScore={settings.randomType === TrainingRandomType.Weighted}/>
         ) : (
-          <TrainingSettings onSettingsChanges={onSettingsChanges} count={filteredList.length} onStart={onStart}/>
+          <TrainingSettings onSettingsChanges={onSettingsChanges} count={filteredList.length} onStart={nextData}/>
         )}
       </div>
     </Layout>

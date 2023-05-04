@@ -2,6 +2,13 @@ import { Patchnote } from "src/models/patchnote";
 
 export const patchnote: Patchnote[] = [
     {
+        version: "1.1.5",
+        date: "02/05/2023 2h05",
+        changes: [
+            "Ajout du tirage pondéré pour l'entrainement. Dans ce mode, le tirage aléatoire se fait selon le score que vous avez pour chaque mot.",
+        ]
+    },
+    {
         version: "1.1.4",
         date: "02/05/2023 2h05",
         changes: [

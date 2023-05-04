@@ -6,6 +6,8 @@ export interface Word {
     kana: string;
     kanji: string;
     tags?: string[];
+    score?: number;
+    kanjiScore?: number;
     createdAt?: string;
     updatedAt?: string;
 }
@@ -14,9 +16,12 @@ export interface Kanji {
     _id?: string;
     name: string;
     kanji: string;
+    score?: number;
     createdAt?: string;
     updatedAt?: string;
 }
+
+export type LanguageItem = Kanji | Word;
 
 export interface Tag {
     _id?: string;

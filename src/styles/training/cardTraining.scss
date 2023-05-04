@@ -13,6 +13,27 @@
             transition: transform 0.6s;
         }
 
+        .colorFromScore {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+
+            height: 1rem;
+            width: 1rem;
+            border-radius: 50%;
+        }
+
+        .responseButtons {
+            display: flex;
+            justify-content: space-around;
+            width: 80%;
+        }
+
+        .responseButtons, .answerButton {
+            position:absolute;
+            bottom: 1rem;
+        }
+
         .back, .front {
             position: absolute;
             width: 100%;

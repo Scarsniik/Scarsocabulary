@@ -22,6 +22,7 @@ const filtersToString = {
 const randomTypeToString = {
     [TrainingRandomType.Full]: "Aléatoire",
     [TrainingRandomType.NoDouble]: "Aléatoire sans remise",
+    [TrainingRandomType.Weighted]: "Aléatoire avec poids",
 }
 
 const settingsKey = "trainingSettings";
@@ -48,7 +49,8 @@ export default function TrainingSettings({onSettingsChanges, count, onStart}: Pr
             [TrainingFilters.Favorites]: false,
             createdSince: 0,
             randomType: TrainingRandomType.Full,
-            tags: []
+            tags: [],
+            useScore: false,
         }, ...(savedSettings ?? {})}
     )
     const [tags, setTags] = useState<Tag[] | undefined>();
