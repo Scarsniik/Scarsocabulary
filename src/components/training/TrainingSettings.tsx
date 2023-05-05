@@ -5,9 +5,10 @@ import Slider from "src/components/utils/Slider";
 import TagDisplay from "src/components/vocabulary/TagDisplay";
 import TagInput from "src/components/vocabulary/TagInput";
 import { TrainingFilters, TrainingLanguage, TrainingRandomType, TrainingSettingsData, TrainingSubject, TrainingType } from "src/models/training";
-import { Tag } from "src/models/word";
+import { Kanji, Tag, Word } from "src/models/word";
 
 import "src/styles/training/trainingSettings.scss";
+import { testRandomElementWithScore } from "src/utils/words";
 
 const languageToString = {
     [TrainingLanguage.FromFrench]: "Depuis le français",
@@ -30,10 +31,10 @@ const settingsKey = "trainingSettings";
 interface Props {
     onSettingsChanges: (settings: TrainingSettingsData) => void;
     onStart: () => void;
-    count: number;
+    list: (Kanji | Word)[];
 }
 
-export default function TrainingSettings({onSettingsChanges, count, onStart}: Props) {
+export default function TrainingSettings({onSettingsChanges, list, onStart}: Props) {
     const savedSettings = useMemo(() => {
         const stringSettings = localStorage.getItem(settingsKey);
         return stringSettings ? JSON.parse(stringSettings) : undefined;
@@ -91,6 +92,12 @@ export default function TrainingSettings({onSettingsChanges, count, onStart}: Pr
         e.preventDefault();
         onStart();
     }
+
+    function onRandomTest(e: any) {
+        e.preventDefault();
+        window.alert(testRandomElementWithScore(list, values.randomWeight, 10000));
+    }
+
     const currentTags = tags && values.tags?.map(t => tags.find(ct => ct._id === t) as Tag);
     return currentTags ? (
         <div className="trainingSettings">
@@ -149,6 +156,20 @@ export default function TrainingSettings({onSettingsChanges, count, onStart}: Pr
                             radio
                         />
                     </Fragment>)}
+                    { values.randomType === TrainingRandomType.Weighted &&
+                        <div>
+                            <label>Poids : </label>
+                            <Slider
+                                name="randomWeight"
+                                onChange={(__, e) => handleChange(e)}
+                                value={values.randomWeight}
+                                min={0}
+                                max={100}
+                                step={1}
+                            />
+                            <button className="button" onClick={onRandomTest}>Tester le poids</button>
+                        </div>
+                    }
                 </section>
                 <section className="subject">
                     <p className="sectionTitle">Filtres de contenu (facultatif):</p>
@@ -171,6 +192,9 @@ export default function TrainingSettings({onSettingsChanges, count, onStart}: Pr
                         formatValue={(v) => v === 0 ?
                             "Desactivé"
                             : `${v} jour${v > 1 ? "s" : ""}`}
+                        min={0}
+                        max={14}
+                        step={1}
                     />
                     <div className="tags">
                         {currentTags?.map((t, i) => <TagDisplay key={i} tag={t} onRemove={handleRemoveTag}/>)}
@@ -182,7 +206,7 @@ export default function TrainingSettings({onSettingsChanges, count, onStart}: Pr
                         />
                     </div>
                 </section>
-                <button className="button" type="submit">Commencer avec {count} données</button>
+                <button className="button" type="submit">Commencer avec {list.length} données</button>
             </form>
         </div>
     ) : <></>;

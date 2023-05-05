@@ -30,6 +30,7 @@ export type TrainingSettingsData = {
     createdSince: number;
     tags: string[];
     useScore: boolean;
+    randomWeight: number;
 } & {
     [K in ValidKey as `${(typeof TrainingSubject & typeof TrainingType & typeof TrainingLanguage & typeof TrainingFilters)[K]}`]: boolean;
 };

@@ -9,15 +9,20 @@ import { ToastContext } from "src/contexts/ToastContext";
 import { ToastType } from "src/models/toast";
 import { TrainingLanguage, TrainingRandomType, TrainingSettingsData } from "src/models/training";
 import { Kanji, Word } from "src/models/word";
-import { getRandomElementWithScore, testRandomElementWithScore } from "src/utils/words";
+import { getRandomElementWithScore } from "src/utils/words";
 
 import "src/styles/training/trainingHome.scss";
+
+export interface CurrentData {
+  date: number;
+  data: Kanji | Word;
+}
 
 export default function TrainingHome() {
   const [settings, setSettings] = useState<TrainingSettingsData>();
   const [words, setWords] = useState<Word[]>();
   const [kanjis, setKanjis] = useState<Kanji[]>();
-  const [currentData, setCurrentData] = useState<Kanji|Word>();
+  const [currentData, setCurrentData] = useState<CurrentData>();
   const [alreadyUsed, setAlreadyUsed] = useState<(Kanji|Word)[]>([]);
   const [filteredList, setFilteredList] = useState<(Kanji|Word)[]>([]);
   const [currentLanguage, setCurrentLanguage] = useState<TrainingLanguage>();
@@ -31,7 +36,6 @@ export default function TrainingHome() {
     if (!kanjis) {
       fetchKanji();
     }
-    testRandomElementWithScore()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -75,6 +79,7 @@ export default function TrainingHome() {
         });
       }
 
+      // testRandomElementWithScore(list);
       setFilteredList(list);
     }
   }
@@ -110,7 +115,7 @@ export default function TrainingHome() {
 
       let randomWord;
       if (settings.randomType === TrainingRandomType.Weighted) {
-        randomWord = getRandomElementWithScore(list, 1.5);
+        randomWord = getRandomElementWithScore(list, settings.randomWeight / 10);
       } else {
         randomWord = list[Math.floor(Math.random() * list.length)];
       }
@@ -121,7 +126,11 @@ export default function TrainingHome() {
         setAlreadyUsed(newAlreadyUsed);
       }
 
-      setCurrentData(randomWord);
+
+      setCurrentData({
+        data: randomWord,
+        date: Date.now(),
+      });
       setCurrentLanguage(randomLanguage);
     }
   }
@@ -131,9 +140,9 @@ export default function TrainingHome() {
       <div className="trainingHome">
         <h2 className="title">Entrainement</h2>
         { settings && currentData && currentLanguage ? (
-          <CardTraining data={currentData} onFinish={nextData} language={currentLanguage} useScore={settings.randomType === TrainingRandomType.Weighted}/>
+          <CardTraining currentData={currentData} onFinish={nextData} language={currentLanguage} useScore={settings.randomType === TrainingRandomType.Weighted}/>
         ) : (
-          <TrainingSettings onSettingsChanges={onSettingsChanges} count={filteredList.length} onStart={nextData}/>
+          <TrainingSettings onSettingsChanges={onSettingsChanges} list={filteredList} onStart={nextData}/>
         )}
       </div>
     </Layout>

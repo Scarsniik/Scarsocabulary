@@ -115,6 +115,9 @@ export default function VocabularyList() {
                     formatValue={(v) => v === 0 ?
                         "Desactivé"
                         : `${v} jour${v > 1 ? "s" : ""}`}
+                    min={0}
+                    max={14}
+                    step={1}
                 />
                 {tagsForFilter?.map((t, i) => <TagDisplay key={i} tag={t as Tag} onRemove={handleRemoveTag}/>)}
                 <TagInput currentTags={tagsForFilter as Tag[]} tags={tags} createDisabled handleSelectTag={handleAddTag}/>

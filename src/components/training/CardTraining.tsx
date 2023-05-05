@@ -6,52 +6,53 @@ import { isWord } from "src/utils/types";
 import { ScoreChangesType, changeDataScore, getColorFromScore } from "src/utils/words";
 
 import "src/styles/training/cardTraining.scss";
+import { CurrentData } from "src/components/training/TrainingHome";
 
 interface Props {
-    data: Kanji | Word;
+    currentData: CurrentData;
     language: TrainingLanguage;
     onFinish: (data?: Kanji | Word) => void;
     useScore: boolean;
 }
 
 export default function CardTraining(props: Props) {
-    const { data, language, onFinish, useScore } = props;
+    const { language, onFinish, useScore, currentData } = props;
 
     const [showResponse, setShowResponse] = useState<boolean>(false);
     const [lastData, setLastData] = useState<Kanji | Word>();
 
     const toDisplay = useMemo<string>(() => {
-        if (isWord(data)) {
+        if (isWord(currentData.data)) {
             switch (language) {
                 case TrainingLanguage.FromFrench:
-                    return data.name;
+                    return currentData.data.name;
                 case TrainingLanguage.FromKana:
-                    return data.kana;
+                    return currentData.data.kana;
                 case TrainingLanguage.FromKanji:
-                    return data.kanji !== undefined && data.kanji !== "" ? data.kanji : data.kana;
+                    return currentData.data.kanji !== undefined && currentData.data.kanji !== "" ? currentData.data.kanji : currentData.data.kana;
                 default:
                     return "ERROR";
             }
         } else {
             switch (language) {
                 case TrainingLanguage.FromFrench:
-                    return data.name;
+                    return currentData.data.name;
                 case TrainingLanguage.FromKana:
-                    return data.kanji;
+                    return currentData.data.kanji;
                 case TrainingLanguage.FromKanji:
-                    return data.kanji;
+                    return currentData.data.kanji;
                 default:
                     return "ERROR";
             }
         }
-    }, [data, language]);
+    }, [currentData, language]);
 
     const showAnswer = useCallback(() => {
-        setLastData(data);
-    }, [data]);
+        setLastData(currentData.data);
+    }, [currentData]);
 
     function scoreButtonClick(type: ScoreChangesType) {
-        const newData = changeDataScore(data, type);
+        const newData = changeDataScore(currentData.data, type);
         onFinish(newData);
     }
 
@@ -62,13 +63,13 @@ export default function CardTraining(props: Props) {
                 let newData;
                 switch (key) {
                     case "ArrowRight":
-                        newData = changeDataScore(data, ScoreChangesType.Positive);
+                        newData = changeDataScore(currentData.data, ScoreChangesType.Positive);
                     break;
                     case "ArrowLeft":
-                        newData = changeDataScore(data, ScoreChangesType.Negative);
+                        newData = changeDataScore(currentData.data, ScoreChangesType.Negative);
                     break;
                     case "ArrowDown":
-                        newData = changeDataScore(data, ScoreChangesType.Neutral);
+                        newData = changeDataScore(currentData.data, ScoreChangesType.Neutral);
                     break;
                 }
                 onFinish(newData);
@@ -89,7 +90,7 @@ export default function CardTraining(props: Props) {
                 showAnswer();
             }
         }
-    }, [onFinish, showAnswer, showResponse, data, useScore]);
+    }, [onFinish, showAnswer, showResponse, currentData.data, useScore]);
 
     useEffect(() => {
         document.addEventListener("keyup", handleShortcut);
@@ -101,27 +102,27 @@ export default function CardTraining(props: Props) {
 
     useEffect(() => {
         setShowResponse(false);
-    }, [data, language]);
+    }, [currentData, language]);
 
     useEffect(() => {
-        if (lastData && lastData === data) {
+        if (lastData && lastData === currentData.data) {
             setShowResponse(true);
         }
-    }, [lastData, data]);
+    }, [lastData, currentData]);
 
     return (<>
         <div className="cardTraining">
             <div className={classNames("card", showResponse && "turn")}>
-                <div className={classNames("back", lastData !== data && "hidde")}>
-                    <p>{data.name}</p>
-                    {(data as Word).kana &&
-                        <p>{(data as Word).kana}</p>
+                <div className={classNames("back", lastData !== currentData.data && "hidde")}>
+                    <p>{currentData.data.name}</p>
+                    {(currentData.data as Word).kana &&
+                        <p>{(currentData.data as Word).kana}</p>
                     }
-                    { data.kanji &&
-                        <p>{data.kanji}</p>
+                    { currentData.data.kanji &&
+                        <p>{currentData.data.kanji}</p>
                     }
                     { useScore && <>
-                        <span className="colorFromScore" style={{backgroundColor: getColorFromScore(data.score ?? 6)}}/>
+                        <span className="colorFromScore" style={{backgroundColor: getColorFromScore(currentData.data.score ?? 6)}}/>
                         <div className="responseButtons">
                             <button className="button" onClick={() => scoreButtonClick(ScoreChangesType.Negative)}>-</button>
                             <button className="button" onClick={() => scoreButtonClick(ScoreChangesType.Neutral)}>=</button>
@@ -131,7 +132,7 @@ export default function CardTraining(props: Props) {
                 </div>
                 <div className="front">
                     { useScore &&
-                        <span className="colorFromScore" style={{backgroundColor: getColorFromScore(data.score ?? 6)}}/>
+                        <span className="colorFromScore" style={{backgroundColor: getColorFromScore(currentData.data.score ?? 6)}}/>
                     }
                     <p>{toDisplay}</p>
                     <button className="button answerButton" onClick={showAnswer}>Réponse</button>

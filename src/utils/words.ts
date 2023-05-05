@@ -91,12 +91,12 @@ export function selectRandomItem(list: (Kanji | Word)[]): Kanji | Word {
   throw new Error('Could not select a random element from the list.');
 }
   
-export function testRandomElementWithScore() {
-    const list: Word[] = [
+export function testRandomElementWithScore(givenList?: (Kanji | Word)[], weight?: number, iteration?: number) {
+    const list: (Word | Kanji)[] = givenList ?? [
       { name: "mot2", kana: "kana2", kanji: "kanji2", score: 1 },
       { name: "mot3", kana: "kana3", kanji: "kanji3", score: 2 },
       { name: "mot4", kana: "kana4", kanji: "kanji4", score: 3 },
-      { name: "motneutralScore", kana: "kananeutralScore", kanji: "kanjineutralScore", score: 4 },
+      { name: "mot5", kana: "kana5", kanji: "kanji5", score: 4 },
       { name: "mot6", kana: "kana6", kanji: "kanji6", score: 5 },
       { name: "mot7", kana: "kana7", kanji: "kanji7", score: 6 },
       { name: "mot8", kana: "kana8", kanji: "kanji8", score: 7 },
@@ -108,10 +108,10 @@ export function testRandomElementWithScore() {
   
     const scoresCount: number[] = Array(11).fill(0);
   
-    const totalIterations = 100000;
+    const totalIterations = iteration ?? 100000;
   
     for (let i = 0; i < totalIterations; i++) {
-      const element = getRandomElementWithScore(list, 1.5);
+      const element = getRandomElementWithScore(list, weight ?? 1);
       scoresCount[(element.score || neutralScore) - 1]++;
     }
   
@@ -120,6 +120,8 @@ export function testRandomElementWithScore() {
     );
   
     console.log("Scores percentages: ", scoresPercentages);
+
+    return scoresPercentages;
 }
 
 export function getColorFromScore(score: number): string {
