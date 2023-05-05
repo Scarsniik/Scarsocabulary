@@ -52,6 +52,7 @@ export default function TrainingSettings({onSettingsChanges, list, onStart}: Pro
             randomType: TrainingRandomType.Full,
             tags: [],
             useScore: false,
+            randomWeight: 10,
         }, ...(savedSettings ?? {})}
     )
     const [tags, setTags] = useState<Tag[] | undefined>();
