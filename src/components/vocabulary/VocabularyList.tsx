@@ -143,6 +143,7 @@ export default function VocabularyList() {
         {
             label: "Tag",
             render: (item: Word) => item.tags ? item.tags.length : 0,
+            className: "tagColumn",
         }
     ]
 

@@ -17,6 +17,7 @@ import "src/styles/vocabulary/vocabularyList.scss";
 export interface Column<T> {
     label: string;
     render: (item: T) => JSX.Element | string | number;
+    className?: string;
 }
 
 export interface Filters {
@@ -145,7 +146,7 @@ export default function TermList<T>(props: Props<T>) {
                         <tr>
                             <th/>
                                 { columns.map((column, key) =>
-                                    <td key={key}>{column.label}</td>
+                                    <td key={key} className={column.className}>{column.label}</td>
                                 )}
                             <th/>
                         </tr>
@@ -160,7 +161,7 @@ export default function TermList<T>(props: Props<T>) {
                                 />
                             </td>
                             { columns.map((column, key) =>
-                                <td key={key}>{column.render(item)}</td>
+                                <td key={key} className={column.className}>{column.render(item)}</td>
                             )}
                             <td className="actionsLine">
                                 <button onClick={() => handleEdit(item)}>

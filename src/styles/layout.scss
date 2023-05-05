@@ -1,6 +1,7 @@
 #layout {
     display: flex;
     flex-direction: column;
+    width: 100%;
     #pageContent {
         padding: 1rem 3rem;
 
@@ -22,6 +23,9 @@
     background: #202225;
     height: 4rem;
     padding: 0 3rem;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
 
     .homeButton {
         display: flex;

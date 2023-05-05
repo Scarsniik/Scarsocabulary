@@ -2,12 +2,18 @@ body {
   color: white;
   background-color: #333;
 
+  width: 100%;
+
   scrollbar-width: auto;
   scrollbar-color: #444 #111;
 
   svg {
     fill: white;
   }
+}
+
+#root {
+  width: 100%;
 }
 
 button {

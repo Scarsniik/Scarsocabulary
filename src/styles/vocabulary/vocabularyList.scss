@@ -141,10 +141,37 @@
             }
         }
         .tools {
-            justify-content: flex-start;
+            justify-content: center;
+            width: 100vw;
+
+            .contentButtons {
+                margin-top: 1rem;
+            }
+
             .searchContainer {
                 margin-left: 0.5rem;
             }
+        }
+
+        .filters {
+            padding: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            
+            label {
+                margin-right: 1rem;
+            }
+            .slider {
+                min-width: 12rem;
+            }
+        }
+
+        .resultCount {
+            text-align: center;
+        }
+
+        .tagColumn {
+            display: none;
         }
     }
 }
