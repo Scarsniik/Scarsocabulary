@@ -2,6 +2,13 @@ import { Patchnote } from "src/models/patchnote";
 
 export const patchnote: Patchnote[] = [
     {
+        version: "1.1.7",
+        date: "05/05/2023 20h17",
+        changes: [
+            "Fixe de l'affichage mobile. Normalement tout evrait s'afficher. C'est pas forcement beau mais ça fonctionne",
+        ]
+    },
+    {
         version: "1.1.6",
         date: "05/05/2023 18h30",
         changes: [
