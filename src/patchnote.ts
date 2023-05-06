@@ -5,7 +5,7 @@ export const patchnote: Patchnote[] = [
         version: "1.1.7",
         date: "05/05/2023 20h17",
         changes: [
-            "Fixe de l'affichage mobile. Normalement tout evrait s'afficher. C'est pas forcement beau mais ça fonctionne",
+            "Fixe de l'affichage mobile. Normalement tout devrait s'afficher. C'est pas forcement beau mais ça fonctionne",
         ]
     },
     {

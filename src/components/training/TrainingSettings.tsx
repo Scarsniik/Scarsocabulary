@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, Fragment, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import { ApiTags } from "src/api/tags";
 import Checkbox from "src/components/utils/Checkbox";
 import Slider from "src/components/utils/Slider";
@@ -102,11 +102,11 @@ export default function TrainingSettings({onSettingsChanges, list, onStart}: Pro
     const currentTags = tags && values.tags?.map(t => tags.find(ct => ct._id === t) as Tag);
     return currentTags ? (
         <div className="trainingSettings">
-            <h3>Settings</h3>
+            <h3 className="subTitle">Settings</h3>
             <form onSubmit={start}>
                 <section className="subject">
                     <p className="sectionTitle">Sections sur lesquels vous entrainer :</p>
-                    { Object.entries(TrainingSubject).map(([subjectKey, subjectValue], key) => <Fragment key={key}>
+                    { Object.entries(TrainingSubject).map(([subjectKey, subjectValue], key) => <div key={key}>
                         <label key={`label-${key}`} htmlFor={subjectKey}>{subjectKey} : </label>
                         <Checkbox
                             key={key}
@@ -115,11 +115,11 @@ export default function TrainingSettings({onSettingsChanges, list, onStart}: Pro
                             checked={(values[subjectValue])}
                             onChange={handleChange}
                         />
-                    </Fragment>)}
+                    </div>)}
                 </section>
                 <section className="subject">
                     <p className="sectionTitle">Type d'exercice :</p>
-                    { Object.entries(TrainingType).map(([typeKey, typeValue], key) => <Fragment key={key}>
+                    { Object.entries(TrainingType).map(([typeKey, typeValue], key) => <div key={key}>
                         <label key={`label-${key}`} htmlFor={typeKey}>{typeKey} : </label>
                         <Checkbox
                             key={key}
@@ -128,11 +128,11 @@ export default function TrainingSettings({onSettingsChanges, list, onStart}: Pro
                             checked={(values[typeValue])}
                             onChange={handleChange}
                         />
-                    </Fragment>)}
+                    </div>)}
                 </section>
                 <section className="subject">
                     <p className="sectionTitle">Options de langue :</p>
-                    { Object.entries(TrainingLanguage).map(([languageKey, languageValue], key) => <Fragment key={key}>
+                    { Object.entries(TrainingLanguage).map(([languageKey, languageValue], key) => <div key={key}>
                         <label key={`label-${key}`} htmlFor={languageKey}>{languageToString[languageValue]} : </label>
                         <Checkbox
                             key={key}
@@ -141,11 +141,11 @@ export default function TrainingSettings({onSettingsChanges, list, onStart}: Pro
                             checked={(values[languageValue])}
                             onChange={handleChange}
                         />
-                    </Fragment>)}
+                    </div>)}
                 </section>
                 <section className="subject">
                     <p className="sectionTitle">Type de tirage :</p>
-                    { Object.entries(TrainingRandomType).map(([randomTypeKey, randomTypeValue], key) => <Fragment key={key}>
+                    { Object.entries(TrainingRandomType).map(([randomTypeKey, randomTypeValue], key) => <div key={key}>
                         <label key={`label-${key}`} htmlFor={randomTypeKey}>{randomTypeToString[randomTypeValue]} : </label>
                         <Checkbox
                             key={key}
@@ -156,9 +156,9 @@ export default function TrainingSettings({onSettingsChanges, list, onStart}: Pro
                             onChange={handleChange}
                             radio
                         />
-                    </Fragment>)}
+                    </div>)}
                     { values.randomType === TrainingRandomType.Weighted &&
-                        <div>
+                        <div className="oneLine">
                             <label>Poids : </label>
                             <Slider
                                 name="randomWeight"
@@ -174,7 +174,7 @@ export default function TrainingSettings({onSettingsChanges, list, onStart}: Pro
                 </section>
                 <section className="subject">
                     <p className="sectionTitle">Filtres de contenu (facultatif):</p>
-                    { Object.entries(TrainingFilters).map(([filterKey, filterValue], key) => <Fragment key={key}>
+                    { Object.entries(TrainingFilters).map(([filterKey, filterValue], key) => <div key={key}>
                         <label key={`label-${key}`} htmlFor={filterKey}>{filtersToString[filterValue]} : </label>
                         <Checkbox
                             key={key}
@@ -183,21 +183,23 @@ export default function TrainingSettings({onSettingsChanges, list, onStart}: Pro
                             checked={(values[filterValue])}
                             onChange={handleChange}
                         />
-                    </Fragment>)}
-                    <label>Créé depuis : </label>
-                    <Slider
-                        id="todayFilter"
-                        value={values.createdSince}
-                        name="createdSince"
-                        onChange={(__, e) => handleChange(e)}
-                        formatValue={(v) => v === 0 ?
-                            "Desactivé"
-                            : `${v} jour${v > 1 ? "s" : ""}`}
-                        min={0}
-                        max={14}
-                        step={1}
-                    />
-                    <div className="tags">
+                    </div>)}
+                    <div>
+                        <label>Créé depuis : </label>
+                        <Slider
+                            id="todayFilter"
+                            value={values.createdSince}
+                            name="createdSince"
+                            onChange={(__, e) => handleChange(e)}
+                            formatValue={(v) => v === 0 ?
+                                "Desactivé"
+                                : `${v} jour${v > 1 ? "s" : ""}`}
+                            min={0}
+                            max={14}
+                            step={1}
+                        />
+                    </div>
+                    <div className="tags oneLine">
                         {currentTags?.map((t, i) => <TagDisplay key={i} tag={t} onRemove={handleRemoveTag}/>)}
                         <TagInput
                             currentTags={currentTags}
