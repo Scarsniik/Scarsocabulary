@@ -2,6 +2,7 @@ import { PathRouteProps } from "react-router-dom";
 import Home from "src/components/Home";
 import Login from "src/components/auth/Login";
 import Signup from "src/components/auth/Signup";
+import KanjiDetails from "src/components/kanji/KanjiDetails";
 import KanjiList from "src/components/kanji/KanjiList";
 import TagsList from "src/components/tags/TagsList";
 import TrainingHome from "src/components/training/TrainingHome";
@@ -41,6 +42,12 @@ export const routes: ({needLogin?: boolean, name?: string} & PathRouteProps)[] =
         name: "wordDetails",
         path: "/vocabulary/:id",
         element: <WordDetails />,
+        needLogin: true,
+    },
+    {
+        name: "kanjiDetails",
+        path: "/kanjis/:id",
+        element: <KanjiDetails />,
         needLogin: true,
     },
     {

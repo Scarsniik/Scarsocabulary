@@ -1,4 +1,4 @@
-import { JishoAPIResult } from "unofficial-jisho-api";
+import { JishoAPIResult, KanjiParseResult } from "unofficial-jisho-api";
 
 export interface Word {
     _id?: string;
@@ -34,6 +34,11 @@ export interface Tag {
 export interface WordAndData {
     word: Word;
     data: JishoAPIResult;
+}
+
+export interface KanjiAndData {
+    kanji: Kanji;
+    data: KanjiParseResult;
 }
 
 // Request Kanji tout ça

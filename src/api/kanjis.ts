@@ -1,5 +1,5 @@
 import { ApiResult } from "src/models/api";
-import { Kanji } from "src/models/word";
+import { Kanji, KanjiAndData } from "src/models/word";
 import { API_URL } from "src/config";
 import axios from "src/api/axios";
 
@@ -23,6 +23,20 @@ async function getKanjis(): Promise<Kanji[]> {
   } catch (error) {
     console.error(error);
     return [];
+  }
+}
+
+async function getKanji(id: string): Promise<KanjiAndData | null> {
+  try {
+    const { data } = await axios.get<KanjiAndData>(`${KANJI_API_URL}/${id}`);
+    if (data) {
+      return data;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
   }
 }
 
@@ -108,6 +122,7 @@ async function removeKanji(id: string): Promise<ApiResult<Kanji[], KanjiResult>>
 
 export const ApiKanji = {
   getKanjis,
+  getKanji,
   addKanji,
   removeKanji,
   AddKanjiResult: KanjiResult,

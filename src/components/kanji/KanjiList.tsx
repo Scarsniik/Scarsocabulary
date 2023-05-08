@@ -9,6 +9,7 @@ import ExtractKanjiButton from "src/components/kanji/ExtractKanjiButton";
 import "src/styles/vocabulary/vocabularyList.scss";
 import moment from "moment";
 import Slider from "src/components/utils/Slider";
+import { Link } from "react-router-dom";
 
 
 export default function VocabularyList() {
@@ -96,7 +97,9 @@ export default function VocabularyList() {
     const column: Column<Kanji>[] = [
         {
             label: "Nom",
-            render: (item: Kanji) => item.name,
+            render: (item: Kanji) => (
+                <Link to={`/kanjis/${item._id}`}>{item.name}</Link>
+            ),
         },
         {
             label: "Kanji",
