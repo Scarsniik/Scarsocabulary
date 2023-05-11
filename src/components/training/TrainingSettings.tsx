@@ -96,7 +96,7 @@ export default function TrainingSettings({onSettingsChanges, list, onStart}: Pro
 
     function onRandomTest(e: any) {
         e.preventDefault();
-        window.alert(testRandomElementWithScore(list, values.randomWeight, 10000));
+        window.alert(testRandomElementWithScore(list, values.randomWeight / 10, 10000));
     }
 
     const currentTags = tags && values.tags?.map(t => tags.find(ct => ct._id === t) as Tag);
