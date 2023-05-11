@@ -8,7 +8,7 @@ import Layout from "src/components/layout/Layout";
 import { PopupContext } from "src/contexts/PopupContext";
 import { ToastContext } from "src/contexts/ToastContext";
 import { ToastType } from "src/models/toast";
-import { Kanji, KanjiAndData, Word } from "src/models/word";
+import { KanjiAndData, Word } from "src/models/word";
 import "src/styles/vocabulary/wordDetails.scss";
 
 export default function KanjiDetails() {
@@ -49,7 +49,7 @@ export default function KanjiDetails() {
             fetch();
             fetchVocabulary();
         }
-    }, [wordId, fetch])
+    }, [wordId, fetch, fetchVocabulary])
 
     function onEdit() {
         fetch();
