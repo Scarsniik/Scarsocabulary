@@ -9,6 +9,8 @@ import { PopupContext } from "src/contexts/PopupContext";
 import { ToastContext } from "src/contexts/ToastContext";
 import { ToastType } from "src/models/toast";
 import { KanjiAndData, Word } from "src/models/word";
+import { ttsJp } from "src/utils/tts";
+
 import "src/styles/vocabulary/wordDetails.scss";
 
 export default function KanjiDetails() {
@@ -92,6 +94,7 @@ export default function KanjiDetails() {
                     { result?.kanji?.updatedAt &&
                         <p><label>Modifié le </label>{moment(result?.kanji?.updatedAt).format('DD/MM/YYYY HH:mm')}</p>
                     }
+                    <button className="button" onClick={() => ttsJp(result?.kanji.kanji as string)}>Speak</button>
                     <button className="button" onClick={handleEdit}>Edit</button>
                     <button className="button" onClick={removeWord}>Delete</button>
                 </section>

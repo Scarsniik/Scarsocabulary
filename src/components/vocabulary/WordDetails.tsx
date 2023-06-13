@@ -11,6 +11,8 @@ import { PopupContext } from "src/contexts/PopupContext";
 import { ToastContext } from "src/contexts/ToastContext";
 import { ToastType } from "src/models/toast";
 import { Tag, WordAndData } from "src/models/word";
+import { ttsJp } from "src/utils/tts";
+
 import "src/styles/vocabulary/wordDetails.scss";
 
 export default function WordDetails() {
@@ -145,6 +147,7 @@ export default function WordDetails() {
                         <TagInput currentTags={wordsTags as Tag[]} handleSelectTag={handleAddTag}/>
                     </section>
                 <section>
+                    <button className="button" onClick={() => ttsJp(result?.word.kana as string)}>Speak</button>
                     <button className="button" onClick={handleEdit}>Edit</button>
                     <button className="button" onClick={removeWord}>Delete</button>
                 </section>

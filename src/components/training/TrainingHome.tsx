@@ -140,7 +140,13 @@ export default function TrainingHome() {
       <div className="trainingHome">
         <h2 className="title">Entrainement</h2>
         { settings && currentData && currentLanguage ? (
-          <CardTraining currentData={currentData} onFinish={nextData} language={currentLanguage} useScore={settings.randomType === TrainingRandomType.Weighted}/>
+          <CardTraining
+            currentData={currentData}
+            onFinish={nextData}
+            language={currentLanguage}
+            useScore={settings.randomType === TrainingRandomType.Weighted}
+            auto={settings.auto}
+          />
         ) : (
           <TrainingSettings onSettingsChanges={onSettingsChanges} list={filteredList} onStart={nextData}/>
         )}

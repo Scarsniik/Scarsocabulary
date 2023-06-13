@@ -4,19 +4,21 @@ import { Kanji, Word } from "src/models/word";
 import { classNames } from "src/utils/classNames";
 import { isWord } from "src/utils/types";
 import { ScoreChangesType, changeDataScore, getColorFromScore } from "src/utils/words";
+import { CurrentData } from "src/components/training/TrainingHome";
 
 import "src/styles/training/cardTraining.scss";
-import { CurrentData } from "src/components/training/TrainingHome";
+import { ttsFr, ttsJp } from "src/utils/tts";
 
 interface Props {
     currentData: CurrentData;
     language: TrainingLanguage;
     onFinish: (data?: Kanji | Word) => void;
     useScore: boolean;
+    auto?: boolean;
 }
 
 export default function CardTraining(props: Props) {
-    const { language, onFinish, useScore, currentData } = props;
+    const { language, onFinish, useScore, currentData, auto } = props;
 
     const [showResponse, setShowResponse] = useState<boolean>(false);
     const [lastData, setLastData] = useState<Kanji | Word>();
@@ -103,6 +105,32 @@ export default function CardTraining(props: Props) {
     useEffect(() => {
         setShowResponse(false);
     }, [currentData, language]);
+
+    useEffect(() => {
+        if (auto && showResponse && (lastData === currentData.data)) {
+            if (language === TrainingLanguage.FromFrench) {
+                if ((currentData.data as Word).kana) {
+                    ttsJp((currentData.data as Word).kana);
+                } else {
+                    ttsJp(currentData.data.kanji);
+                }
+            } else {
+                ttsFr(currentData.data.name);
+            }
+            setTimeout(onFinish ,2000);
+        } else if (auto && (lastData !== currentData.data)) {
+            if (language === TrainingLanguage.FromFrench) {
+                ttsFr(currentData.data.name);
+            } else {
+                if ((currentData.data as Word).kana) {
+                    ttsJp((currentData.data as Word).kana);
+                } else {
+                    ttsJp(currentData.data.kanji);
+                }
+            }
+            setTimeout(showAnswer ,5000);
+        }
+    }, [showResponse, auto, language, currentData.data, lastData]);
 
     useEffect(() => {
         if (lastData && lastData === currentData.data) {

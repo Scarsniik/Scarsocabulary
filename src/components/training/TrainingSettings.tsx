@@ -53,6 +53,7 @@ export default function TrainingSettings({onSettingsChanges, list, onStart}: Pro
             tags: [],
             useScore: false,
             randomWeight: 10,
+            auto: false,
         }, ...(savedSettings ?? {})}
     )
     const [tags, setTags] = useState<Tag[] | undefined>();
@@ -171,6 +172,16 @@ export default function TrainingSettings({onSettingsChanges, list, onStart}: Pro
                             <button className="button" onClick={onRandomTest}>Tester le poids</button>
                         </div>
                     }
+                </section>
+                <section className="subject">
+                    <p className="sectionTitle">Autres options :</p>
+                    <label htmlFor="auto">Mode auto :</label>
+                    <Checkbox
+                        name="auto"
+                        id="auto"
+                        checked={values.auto}
+                        onChange={handleChange}
+                    />
                 </section>
                 <section className="subject">
                     <p className="sectionTitle">Filtres de contenu (facultatif):</p>
