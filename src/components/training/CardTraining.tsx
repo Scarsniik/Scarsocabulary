@@ -117,7 +117,7 @@ export default function CardTraining(props: Props) {
             } else {
                 ttsFr(currentData.data.name);
             }
-            setTimeout(onFinish ,2000);
+            setTimeout(onFinish ,4000);
         } else if (auto && (lastData !== currentData.data)) {
             if (language === TrainingLanguage.FromFrench) {
                 ttsFr(currentData.data.name);
@@ -130,7 +130,7 @@ export default function CardTraining(props: Props) {
             }
             setTimeout(showAnswer ,5000);
         }
-    }, [showResponse, auto, language, currentData.data, lastData]);
+    }, [showResponse, auto, language, currentData.data, lastData, showAnswer, onFinish]);
 
     useEffect(() => {
         if (lastData && lastData === currentData.data) {
