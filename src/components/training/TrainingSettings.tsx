@@ -54,6 +54,8 @@ export default function TrainingSettings({onSettingsChanges, list, onStart}: Pro
             useScore: false,
             randomWeight: 10,
             auto: false,
+            timeBeforeAnswer: 5,
+            timeBetweenWord: 4,
         }, ...(savedSettings ?? {})}
     )
     const [tags, setTags] = useState<Tag[] | undefined>();
@@ -183,6 +185,29 @@ export default function TrainingSettings({onSettingsChanges, list, onStart}: Pro
                         onChange={handleChange}
                     />
                 </section>
+                { values.auto &&
+                    <section className="subject">
+                        <p className="sectionTitle">Options du mode auto :</p>
+                        <label>Temps avant réponse (s) : </label>
+                        <Slider
+                            name="timeBeforeAnswer"
+                            onChange={(__, e) => handleChange(e)}
+                            value={values.timeBeforeAnswer}
+                            min={0}
+                            max={20}
+                            step={1}
+                        />
+                        <label>Temps entre deux mots (s) : </label>
+                        <Slider
+                            name="timeBetweenWord"
+                            onChange={(__, e) => handleChange(e)}
+                            value={values.timeBetweenWord}
+                            min={0}
+                            max={20}
+                            step={1}
+                        />
+                    </section>
+                }
                 <section className="subject">
                     <p className="sectionTitle">Filtres de contenu (facultatif):</p>
                     { Object.entries(TrainingFilters).map(([filterKey, filterValue], key) => <div key={key}>

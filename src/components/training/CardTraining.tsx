@@ -15,10 +15,12 @@ interface Props {
     onFinish: (data?: Kanji | Word) => void;
     useScore: boolean;
     auto?: boolean;
+    timeBeforeAnswer: number,
+    timeBetweenWord: number,
 }
 
 export default function CardTraining(props: Props) {
-    const { language, onFinish, useScore, currentData, auto } = props;
+    const { language, onFinish, useScore, currentData, auto, timeBeforeAnswer, timeBetweenWord } = props;
 
     const [showResponse, setShowResponse] = useState<boolean>(false);
     const [lastData, setLastData] = useState<Kanji | Word>();
@@ -108,27 +110,27 @@ export default function CardTraining(props: Props) {
 
     useEffect(() => {
         if (auto && showResponse && (lastData === currentData.data)) {
+            const setTimer = () => setTimeout(onFinish , timeBetweenWord * 1000);
             if (language === TrainingLanguage.FromFrench) {
                 if ((currentData.data as Word).kana) {
-                    ttsJp((currentData.data as Word).kana);
+                    ttsJp((currentData.data as Word).kana, setTimer);
                 } else {
-                    ttsJp(currentData.data.kanji);
+                    ttsJp(currentData.data.kanji, setTimer);
                 }
             } else {
-                ttsFr(currentData.data.name);
+                ttsFr(currentData.data.name, setTimer);
             }
-            setTimeout(onFinish ,4000);
         } else if (auto && (lastData !== currentData.data)) {
+            const setTimer = () => setTimeout(showAnswer , timeBeforeAnswer * 1000);;
             if (language === TrainingLanguage.FromFrench) {
-                ttsFr(currentData.data.name);
+                ttsFr(currentData.data.name, setTimer);
             } else {
                 if ((currentData.data as Word).kana) {
-                    ttsJp((currentData.data as Word).kana);
+                    ttsJp((currentData.data as Word).kana, setTimer);
                 } else {
-                    ttsJp(currentData.data.kanji);
+                    ttsJp(currentData.data.kanji, setTimer);
                 }
             }
-            setTimeout(showAnswer ,5000);
         }
     }, [showResponse, auto, language, currentData.data, lastData, showAnswer, onFinish]);
 

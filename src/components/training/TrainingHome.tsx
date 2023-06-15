@@ -146,6 +146,8 @@ export default function TrainingHome() {
             language={currentLanguage}
             useScore={settings.randomType === TrainingRandomType.Weighted}
             auto={settings.auto}
+            timeBeforeAnswer={settings.timeBeforeAnswer}
+            timeBetweenWord={settings.timeBetweenWord}
           />
         ) : (
           <TrainingSettings onSettingsChanges={onSettingsChanges} list={filteredList} onStart={nextData}/>

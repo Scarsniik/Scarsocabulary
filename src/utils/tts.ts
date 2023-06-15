@@ -11,7 +11,7 @@ const getVoices = () => {
   });
 };
 
-async function tts(value: string, lang: string, voice: any, settings ?: {rate?: number, pitch?: number, volume?: number}) {
+async function tts(value: string, lang: string, voice: any, settings ?: {rate?: number, pitch?: number, volume?: number, onFinished?: () => void}) {
   // If speechSynthesis is speaking, cancel it
   if (window.speechSynthesis.speaking) {
     window.speechSynthesis.cancel();
@@ -28,19 +28,23 @@ async function tts(value: string, lang: string, voice: any, settings ?: {rate?: 
   utterance.pitch = settings?.pitch ?? 1; //0 to 2
   utterance.volume = settings?.volume ?? 1; // 0 to 1
 
+  if (settings?.onFinished) {
+    utterance.onend = settings?.onFinished;
+  }
+
   // Queue this utterance
   window.speechSynthesis.speak(utterance);
 }
 
-export async function ttsJp(value: string) {
+export async function ttsJp(value: string, onFinished?: () => void) {
   const voices: any = await getVoices();
   const japVoices = voices.filter((voice: any) => voice.lang === 'ja-JP');
-  tts(value, "ja-JP", japVoices[japVoices.length-1], {rate: 0.8});
+  tts(value, "ja-JP", japVoices[japVoices.length-1], {rate: 0.8, onFinished});
 }
 
-export async function ttsFr(value: string) {
+export async function ttsFr(value: string, onFinished?: () => void) {
   const voices: any = await getVoices();
   const frVoices = voices.filter((voice: any) => voice.lang === 'fr-FR');
   console.log(frVoices, frVoices[frVoices.length-1]);
-  tts(value, "fr-FR", frVoices[frVoices.length-1]);
+  tts(value, "fr-FR", frVoices[frVoices.length-1], {onFinished});
 }
