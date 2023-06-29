@@ -26,10 +26,17 @@ export default function DropDownMenu(props: Props) {
   // FUNCTIONS
 
   const getStyle = useCallback((noTransition: boolean): CSSProperties | undefined => {
-    if (!opened) return;
+    if (!opened || !contentRef.current) return;
+
+    const { top: startPosition, height: contentHeight } = contentRef.current.getBoundingClientRect();
+    const windowSize = window.innerHeight;
+    const availableSize = windowSize - startPosition;
+    const isOverflow = contentHeight > availableSize;
+
     return {
-      height: contentRef.current?.offsetHeight,
-      transition: noTransition ? "unset" : undefined,
+        height: isOverflow ? availableSize : contentHeight,
+        overflowY: isOverflow ? "auto" : undefined,
+        transition: noTransition ? "unset" : undefined,
     };
   }, [opened]);
 
