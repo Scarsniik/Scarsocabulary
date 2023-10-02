@@ -132,7 +132,7 @@ export default function CardTraining(props: Props) {
                 }
             }
         }
-    }, [showResponse, auto, language, currentData.data, lastData, showAnswer, onFinish]);
+    }, [showResponse, auto, language, currentData.data, lastData, showAnswer, onFinish, timeBeforeAnswer, timeBetweenWord]);
 
     useEffect(() => {
         if (lastData && lastData === currentData.data) {
