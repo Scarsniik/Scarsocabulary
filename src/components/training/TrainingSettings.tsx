@@ -24,6 +24,7 @@ const randomTypeToString = {
     [TrainingRandomType.Full]: "Aléatoire",
     [TrainingRandomType.NoDouble]: "Aléatoire sans remise",
     [TrainingRandomType.Weighted]: "Aléatoire avec poids",
+    [TrainingRandomType.Limited]: "Aléatoire avec limite",
 }
 
 const settingsKey = "trainingSettings";

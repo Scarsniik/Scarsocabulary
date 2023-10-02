@@ -1,5 +1,5 @@
 import moment from "moment";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { ApiKanji } from "src/api/kanjis";
 import { ApiVocabulary } from "src/api/vocabulary";
 import Layout from "src/components/layout/Layout";
@@ -26,6 +26,8 @@ export default function TrainingHome() {
   const [alreadyUsed, setAlreadyUsed] = useState<(Kanji|Word)[]>([]);
   const [filteredList, setFilteredList] = useState<(Kanji|Word)[]>([]);
   const [currentLanguage, setCurrentLanguage] = useState<TrainingLanguage>();
+  const limitedList = useRef<(Kanji|Word)[]>();
+
 
   const toast = useContext(ToastContext);
 
@@ -103,8 +105,16 @@ export default function TrainingHome() {
         return;
       }
 
+      if (settings.randomType === TrainingRandomType.Limited && !limitedList.current) {
+        limitedList.current = [];
+        for (let i = 0 ; i < 20 ; i++) {
+          limitedList.current.push(filteredList[Math.floor(Math.random() * filteredList.length)]);
+        }
+        console.log(limitedList.current);
+      }
+
       const lengthBeforeNoDouble = filteredList.length;
-      let list = filteredList;
+      let list = limitedList.current ?? filteredList;
       if (responseData) {
         const id = list.findIndex(d => d._id === responseData._id);
         list[id] = responseData;

@@ -21,6 +21,7 @@ export enum TrainingRandomType {
     Full = "full",
     NoDouble = "noDouble",
     Weighted = "weighted",
+    Limited = "limited",
 }
 
 type ValidKey = keyof typeof TrainingSubject | keyof typeof TrainingType | keyof typeof TrainingLanguage | keyof typeof TrainingFilters;
