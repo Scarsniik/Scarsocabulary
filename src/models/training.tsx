@@ -35,6 +35,8 @@ export type TrainingSettingsData = {
     auto: boolean;
     timeBetweenWord: number;
     timeBeforeAnswer: number;
+    limitedLength: number;
+    limitedRepetitionNumber: number;
 } & {
     [K in ValidKey as `${(typeof TrainingSubject & typeof TrainingType & typeof TrainingLanguage & typeof TrainingFilters)[K]}`]: boolean;
 };

@@ -5,9 +5,9 @@ import { classNames } from "src/utils/classNames";
 import { isWord } from "src/utils/types";
 import { ScoreChangesType, changeDataScore, getColorFromScore } from "src/utils/words";
 import { CurrentData } from "src/components/training/TrainingHome";
+import { ttsFr, ttsJp } from "src/utils/tts";
 
 import "src/styles/training/cardTraining.scss";
-import { ttsFr, ttsJp } from "src/utils/tts";
 
 interface Props {
     currentData: CurrentData;

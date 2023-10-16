@@ -57,6 +57,8 @@ export default function TrainingSettings({onSettingsChanges, list, onStart}: Pro
             auto: false,
             timeBeforeAnswer: 5,
             timeBetweenWord: 4,
+            limitedLength: 20,
+            limitedRepetitionNumber: 0,
         }, ...(savedSettings ?? {})}
     )
     const [tags, setTags] = useState<Tag[] | undefined>();
@@ -175,6 +177,30 @@ export default function TrainingSettings({onSettingsChanges, list, onStart}: Pro
                             <button className="button" onClick={onRandomTest}>Tester le poids</button>
                         </div>
                     }
+                    { values.randomType === TrainingRandomType.Limited && <>
+                        <div className="oneLine">
+                            <label>Nombre de mots : </label>
+                            <Slider
+                                name="limitedLength"
+                                onChange={(__, e) => handleChange(e)}
+                                value={values.limitedLength}
+                                min={1}
+                                max={100}
+                                step={1}
+                            />
+                        </div>
+                        <div className="oneLine">
+                            <label>Nombre de répétition : </label>
+                            <Slider
+                                name="limitedRepetitionNumber"
+                                onChange={(__, e) => handleChange(e)}
+                                value={values.limitedRepetitionNumber}
+                                min={0}
+                                max={20}
+                                step={1}
+                            />
+                        </div>
+                    </>}
                 </section>
                 <section className="subject">
                     <p className="sectionTitle">Autres options :</p>

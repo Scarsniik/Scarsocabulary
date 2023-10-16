@@ -27,7 +27,7 @@ export default function TrainingHome() {
   const [filteredList, setFilteredList] = useState<(Kanji|Word)[]>([]);
   const [currentLanguage, setCurrentLanguage] = useState<TrainingLanguage>();
   const limitedList = useRef<(Kanji|Word)[]>();
-
+  const repetitionCount = useRef<number>(0);
 
   const toast = useContext(ToastContext);
 
@@ -87,6 +87,14 @@ export default function TrainingHome() {
   }
 
   function nextData(responseData?: Kanji | Word) {
+    if (settings?.randomType === TrainingRandomType.Limited &&
+      settings?.limitedRepetitionNumber !== 0 &&
+      repetitionCount.current === settings?.limitedRepetitionNumber &&
+      currentData
+    ) {
+      setCurrentData(undefined);
+      return;
+    }
     if (words && settings) {
       const languageList: TrainingLanguage[] = [];
       if (settings.fromFrench) {
@@ -107,7 +115,7 @@ export default function TrainingHome() {
 
       if (settings.randomType === TrainingRandomType.Limited && !limitedList.current) {
         limitedList.current = [];
-        for (let i = 0 ; i < 20 ; i++) {
+        for (let i = 0 ; i < settings.limitedLength ; i++) {
           limitedList.current.push(filteredList[Math.floor(Math.random() * filteredList.length)]);
         }
         console.log(limitedList.current);
@@ -119,8 +127,15 @@ export default function TrainingHome() {
         const id = list.findIndex(d => d._id === responseData._id);
         list[id] = responseData;
       }
-      if (settings.randomType === TrainingRandomType.NoDouble) {
+      let resetAlreadyUsed: boolean = false;
+      if ([TrainingRandomType.NoDouble, TrainingRandomType.Limited].includes(settings.randomType)) {
         list = list.filter((w) => !alreadyUsed?.includes(w));
+        if (list.length === 0) {
+          list = limitedList.current ?? filteredList;
+          resetAlreadyUsed = true;
+          repetitionCount.current++;
+        }
+        console.log(list)
       }
 
       let randomWord;
@@ -130,8 +145,8 @@ export default function TrainingHome() {
         randomWord = list[Math.floor(Math.random() * list.length)];
       }
 
-      if (settings.randomType === TrainingRandomType.NoDouble) {
-        let newAlreadyUsed = [...alreadyUsed, randomWord];
+      if ([TrainingRandomType.NoDouble, TrainingRandomType.Limited].includes(settings.randomType)) {
+        let newAlreadyUsed = [...(resetAlreadyUsed ? [] : alreadyUsed), randomWord];
         if (newAlreadyUsed.length === lengthBeforeNoDouble) newAlreadyUsed = [];
         setAlreadyUsed(newAlreadyUsed);
       }
@@ -143,6 +158,11 @@ export default function TrainingHome() {
       });
       setCurrentLanguage(randomLanguage);
     }
+  }
+
+  function onStart() {
+    repetitionCount.current = 0;
+    nextData();
   }
 
   return (
@@ -160,7 +180,7 @@ export default function TrainingHome() {
             timeBetweenWord={settings.timeBetweenWord}
           />
         ) : (
-          <TrainingSettings onSettingsChanges={onSettingsChanges} list={filteredList} onStart={nextData}/>
+          <TrainingSettings onSettingsChanges={onSettingsChanges} list={filteredList} onStart={onStart}/>
         )}
       </div>
     </Layout>
