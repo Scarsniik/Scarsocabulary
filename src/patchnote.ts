@@ -2,6 +2,13 @@ import { Patchnote } from "src/models/patchnote";
 
 export const patchnote: Patchnote[] = [
     {
+        version: "1.1.9",
+        date: "16/10/2023 21h20",
+        changes: [
+            "Entrainement : Possibilité de choisir une limite de mot tirés et de les répéter un nombre de fois donné avant que l'entrainement se termine",
+        ]
+    },
+    {
         version: "1.1.8",
         date: "09/05/2023 1h30",
         changes: [
